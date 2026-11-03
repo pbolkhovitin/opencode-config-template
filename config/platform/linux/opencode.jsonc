@@ -1,0 +1,10 @@
+// Linux MCP overrides
+{
+  "mcp": {
+    "filesystem": {
+      "environment": {
+        "ALLOWED_DIRECTORIES": "/home/YOURUSER"
+      }
+    }
+  }
+}

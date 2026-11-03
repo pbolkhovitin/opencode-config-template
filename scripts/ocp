@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+# ocp — переключение профилей OpenCode.
+#
+#   ocp              выбрать профиль в fzf-меню
+#   ocp infra        запустить OpenCode в профиле infra
+#   ocp default      лёгкий профиль без MCP
+#
+# Дополнительные аргументы передаются в opencode:
+#   ocp infra --model anthropic/claude-sonnet-4-5
+#
+# В OpenCode v2 конфигурацией владеет фоновый сервис, поэтому одного
+# OPENCODE_CONFIG недостаточно: клиент подключится к уже запущенному сервису
+# с default-конфигом. --standalone поднимает приватный сервер с нужным профилем.
+#
+# По умолчанию ocp продолжает последнюю сессию текущего проекта (--continue),
+# чтобы запуск не создавал новую сессию каждый раз. Новая сессия — leader+n
+# в TUI. Если переданы -c/--continue/-s/--session, флаг не добавляется.
+set -euo pipefail
+
+CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+PROFILES=(default dev infra net sec ot mgnt)
+
+usage() {
+  cat <<'EOF'
+usage: ocp [profile] [opencode args...]
+
+profiles: default dev infra net sec ot mgnt
+
+  ocp            выбрать профиль в fzf
+  ocp infra      запустить в профиле infra
+  ocp default    лёгкий профиль без MCP
+
+По умолчанию продолжается последняя сессия проекта (--continue).
+Новая сессия — leader+n в TUI. Явно: -c/--continue или -s/--session.
+
+Конфиг: ~/.config/opencode/opencode.json (default)
+        ~/.config/opencode-<profile>/opencode.json (именные)
+EOF
+}
+
+profile_config() {
+  case "$1" in
+    default) printf '%s/opencode/opencode.json\n' "$CONFIG_HOME" ;;
+    *)       printf '%s/opencode-%s/opencode.json\n' "$CONFIG_HOME" "$1" ;;
+  esac
+}
+
+case "${1:-}" in
+  -h|--help) usage; exit 0 ;;
+esac
+
+if [[ $# -eq 0 ]]; then
+  if ! command -v fzf >/dev/null 2>&1; then
+    printf 'fzf не найден. Профили: %s\n' "${PROFILES[*]}" >&2
+    usage >&2
+    exit 2
+  fi
+  choice=$(printf '%s\n' "${PROFILES[@]}" | fzf --prompt='opencode profile> ' --height=12 --reverse) || exit 130
+else
+  choice=$1
+  shift
+fi
+
+if [[ " ${PROFILES[*]} " != *" $choice "* ]]; then
+  printf 'неизвестный профиль: %s\n' "$choice" >&2
+  usage >&2
+  exit 2
+fi
+
+config=$(profile_config "$choice")
+if [[ ! -f $config ]]; then
+  printf 'конфиг не найден: %s\n' "$config" >&2
+  exit 2
+fi
+
+export OPENCODE_CONFIG="$config"
+
+# Продолжаем последнюю сессию проекта, если пользователь не выбрал сессию сам.
+resume=(--continue)
+for arg in "$@"; do
+  case "$arg" in
+    -c|--continue|-s|--session|--session=*) resume=(); break ;;
+  esac
+done
+
+exec opencode --standalone "${resume[@]}" "$@"

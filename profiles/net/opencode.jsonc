@@ -1,0 +1,183 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "anthropic/claude-sonnet-4-5",
+  "small_model": "anthropic/claude-sonnet-4-5",
+  "default_agent": "network-engineer",
+  "agent": {
+    "network-engineer": {
+      "description": "Network engineer — routing, switching, VLAN, firewall, VPN, RouterOS/OpenWrt/pfSense",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/network-engineer.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": "ask"
+      }
+    },
+    "network-security": {
+      "description": "Network security — segmentation, ACL/firewall audit, IDS, VPN hardening",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/network-security.md}",
+      "permission": {
+        "edit": "deny",
+        "bash": "ask"
+      }
+    },
+    "bgp-ospf-analyst": {
+      "description": "Routing protocol analyst — BGP/OSPF/IS-IS best-path, filtering, convergence",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/bgp-ospf-analyst.md}",
+      "permission": {
+        "edit": "deny",
+        "bash": "ask"
+      }
+    },
+    "packet-analyst": {
+      "description": "Packet and traffic analysis — pcap, tshark/Zeek, timelines, artifacts",
+      "mode": "subagent",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/packet-analyst.md}",
+      "permission": {
+        "edit": "deny",
+        "bash": "ask"
+      }
+    }
+  },
+  "instructions": [
+    "instructions/context-protocol.md",
+    "AGENTS.md",
+    "instructions/net-safety.md"
+  ],
+  "skills": {
+    "paths": [
+      "~/.config/opencode/skills"
+    ]
+  },
+  "permission": {
+    "bash": "ask",
+    "edit": "ask",
+    "skill": {
+      "*": "deny",
+      "active-network-recon": "allow",
+      "agent-vault": "allow",
+      "analyzing-network-traffic-with-wireshark": "allow",
+      "cavecrew": "allow",
+      "caveman": "allow",
+      "caveman-commit": "allow",
+      "caveman-compress": "allow",
+      "caveman-help": "allow",
+      "caveman-review": "allow",
+      "caveman-stats": "allow",
+      "code-review-and-quality": "allow",
+      "compress": "allow",
+      "configuring-pfsense-firewall-rules": "allow",
+      "debugging-and-error-recovery": "allow",
+      "dispatching-parallel-agents": "allow",
+      "docker-kubernetes": "allow",
+      "enumerating-network-services": "allow",
+      "find-skills": "allow",
+      "grill-me": "allow",
+      "homelab-vlan-segmentation": "allow",
+      "log-analysis": "allow",
+      "mikrotik-routeros-rsc": "allow",
+      "network-101": "allow",
+      "openwrt-config": "allow",
+      "openwrt-image-build": "allow",
+      "openwrt-procd-init": "allow",
+      "podkop-openwrt-guide": "allow",
+      "routeros-fundamentals": "allow",
+      "security-audit": "allow",
+      "security-secrets": "allow",
+      "systematic-debugging": "allow",
+      "traffic-analysis-pcap": "allow",
+      "verification-before-completion": "allow",
+      "wireshark-analysis": "allow",
+      "writing-plans": "allow"
+    }
+  },
+  "snapshot": true,
+  "watcher": {
+    "ignore": [
+      "node_modules",
+      "dist",
+      ".git",
+      "*.log"
+    ]
+  },
+  "mcp": {
+    "servers": {
+      "ssh": {
+        "type": "local",
+        "command": [
+          "uvx",
+          "--from",
+          "slepp-ssh-mcp",
+          "ssh-mcp"
+        ],
+        "disabled": false
+      },
+      "docker": {
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "mcp-docker-server"
+        ],
+        "disabled": false
+      },
+      "filesystem": {
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "@modelcontextprotocol/server-filesystem"
+        ],
+        "environment": {
+          "ALLOWED_DIRECTORIES": "/home/YOURUSER"
+        },
+        "disabled": false
+      },
+      "duckduckgo": {
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "ddg-mcp-search"
+        ],
+        "disabled": false
+      }
+    }
+  },
+  "plugins": [
+    "@tarquinen/opencode-dcp@3.2.0",
+    "opencode-supermemory",
+    "opencode-gemini-auth",
+    "opencode-handoff@0.6.1",
+    "opencode-usage-monitor@3.1.0"
+  ],
+  "commands": {
+    "profile": {
+      "template": "echo \"Текущий профиль: $(basename $(dirname ${OPENCODE_CONFIG:-$HOME/.config/opencode/opencode.json}))\"",
+      "description": "Показать текущий профиль opencode"
+    }
+  },
+  "compaction": {
+    "auto": true,
+    "keep": {
+      "tokens": 20000
+    },
+    "buffer": 24000
+  },
+  "references": {
+    "context": {
+      "path": "~/.config/opencode/context",
+      "description": "Context ledger. Read INDEX.md first, then only the needed file."
+    },
+    "docs": {
+      "path": "~/.local/share/opencode/opencode-synced/repo/docs",
+      "description": "Project docs; open only the relevant page."
+    }
+  }
+}

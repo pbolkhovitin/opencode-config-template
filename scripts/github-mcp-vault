@@ -1,0 +1,117 @@
+#!/usr/bin/env bash
+# github-mcp-vault — официальный GitHub MCP с PAT из личного Vault (instance personal).
+#
+# Токен читается из secret/agent/<project>/github YOUR_ORG pat и передаётся
+# только в env дочернего процесса MCP-сервера. Значение никогда не печатается.
+#
+#   github-mcp-vault                 запустить MCP (stdio) через Docker
+#   github-mcp-vault --check         проверить наличие секрета в Vault
+#   github-mcp-vault --check-api     проверить токен запросом к api.github.com/user
+#
+# Переопределения:
+#   GITHUB_MCP_SECRET     (по умолчанию "github YOUR_ORG pat")
+#   GITHUB_MCP_PROJECT    (по умолчанию YOUR_PROJECT)
+#   GITHUB_MCP_INSTANCE   (по умолчанию personal)
+#   GITHUB_MCP_IMAGE      (по умолчанию ghcr.io/github/github-mcp-server)
+#   GITHUB_MCP_TOOLSETS   (например repos,issues,pull_requests,actions)
+#   GITHUB_MCP_DOCKER     (по умолчанию docker)
+#   GITHUB_API_URL        (по умолчанию https://api.github.com)
+set -euo pipefail
+
+usage() {
+  cat >&2 <<'EOF'
+usage: github-mcp-vault [--check|--check-api]
+
+  Без аргументов — запустить официальный GitHub MCP Server (stdio).
+  --check      проверить наличие PAT в Vault
+  --check-api  проверить PAT запросом к GitHub API (HTTP 200)
+
+PAT: Vault instance personal, project YOUR_PROJECT, secret "github YOUR_ORG pat".
+Сервер: ghcr.io/github/github-mcp-server (Docker).
+
+Переопределения: GITHUB_MCP_SECRET, GITHUB_MCP_PROJECT, GITHUB_MCP_INSTANCE,
+GITHUB_MCP_IMAGE, GITHUB_MCP_TOOLSETS, GITHUB_MCP_DOCKER, GITHUB_API_URL.
+EOF
+}
+
+secret="${GITHUB_MCP_SECRET:-github YOUR_ORG pat}"
+project="${GITHUB_MCP_PROJECT:-YOUR_PROJECT}"
+instance="${GITHUB_MCP_INSTANCE:-personal}"
+image="${GITHUB_MCP_IMAGE:-ghcr.io/github/github-mcp-server}"
+toolsets="${GITHUB_MCP_TOOLSETS:-}"
+docker_bin="${GITHUB_MCP_DOCKER:-docker}"
+api_url="${GITHUB_API_URL:-https://api.github.com}"
+
+agent_vault="${AGENT_VAULT_BIN:-}"
+if [[ -z $agent_vault ]]; then
+  agent_vault=$(command -v agent-vault || true)
+fi
+if [[ -z $agent_vault ]]; then
+  agent_vault="$HOME/.local/bin/agent-vault"
+fi
+if [[ ! -x $agent_vault ]]; then
+  echo "github-mcp-vault: agent-vault не найден ($agent_vault)" >&2
+  exit 127
+fi
+
+case "${1:-}" in
+  -h|--help)
+    usage
+    exit 0
+    ;;
+  --check)
+    "$agent_vault" use "$secret" --project "$project" --instance "$instance" -- '
+      if [[ -n ${VAULT_PASSWORD:-} ]]; then
+        echo "secret: OK"
+      else
+        echo "secret: EMPTY" >&2
+        exit 1
+      fi
+    '
+    printf 'secret: secret/agent/%s/%s\n' "$project" "$secret"
+    exit 0
+    ;;
+  --check-api)
+    "$agent_vault" use "$secret" --project "$project" --instance "$instance" -- '
+      code=$(printf "header = \"Authorization: Bearer %s\"\n" "${VAULT_PASSWORD:?empty GitHub token in Vault}" \
+        | curl -sS --max-time 15 -o /dev/null -w "%{http_code}" -K - \
+          "${GITHUB_API_URL:-https://api.github.com}/user" 2>/dev/null || echo 000)
+      printf "api: HTTP %s\n" "$code"
+      [[ $code == 200 ]]
+    '
+    exit $?
+    ;;
+  "")
+    ;;
+  *)
+    usage
+    exit 2
+    ;;
+esac
+
+if ! command -v "$docker_bin" >/dev/null 2>&1; then
+  echo "github-mcp-vault: $docker_bin не найден; нужен Docker или podman-docker" >&2
+  exit 127
+fi
+
+if ! "$docker_bin" image inspect "$image" >/dev/null 2>&1; then
+  echo "github-mcp-vault: pulling $image" >&2
+  "$docker_bin" pull "$image" >&2
+fi
+
+docker_args=(run -i --rm -e GITHUB_PERSONAL_ACCESS_TOKEN)
+if [[ -n $toolsets ]]; then
+  docker_args+=("$image" --toolsets "$toolsets")
+else
+  docker_args+=("$image")
+fi
+
+docker_cmd="$docker_bin"
+for arg in "${docker_args[@]}"; do
+  docker_cmd+=" $(printf '%q' "$arg")"
+done
+
+exec "$agent_vault" use "$secret" --project "$project" --instance "$instance" -- "
+  export GITHUB_PERSONAL_ACCESS_TOKEN=\"\${VAULT_PASSWORD:?empty GitHub token in Vault}\"
+  exec $docker_cmd
+"

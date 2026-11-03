@@ -1,0 +1,51 @@
+{
+  "//": "Шаблон проектного конфига OpenCode. Скопируйте в <project>/opencode.json (или .opencode/opencode.json), удалите ключи // и подставьте свои значения. MCP и агенты живут вместе с проектом, глобальный default остаётся лёгким.",
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "servers": {
+      "postgres": {
+        "type": "local",
+        "command": ["npx", "-y", "@modelcontextprotocol/server-postgres"],
+        "environment": {
+          "DATABASE_URL": "{env:DATABASE_URL}"
+        }
+      },
+      "docker": {
+        "type": "local",
+        "command": ["docker-mcp"]
+      },
+      "github": {
+        "type": "remote",
+        "url": "https://api.githubcopilot.com/mcp/",
+        "headers": {
+          "Authorization": "Bearer {env:GITHUB_TOKEN}"
+        }
+      }
+    }
+  },
+  "agent": {
+    "project-reviewer": {
+      "description": "Ревью изменений в этом проекте: стиль, тесты, границы модулей.",
+      "mode": "subagent",
+      "prompt": "Ты ревьюишь только этот репозиторий. Проверяй: соответствие принятому стилю, покрытие тестами, отсутствие секретов, обратную совместимость. Возвращай список находок с файлами и строками.",
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "*": "deny",
+          "git diff*": "allow",
+          "git log*": "allow",
+          "rg*": "allow"
+        },
+        "skill": {
+          "*": "deny",
+          "code-review-and-quality": "allow",
+          "verification-before-completion": "allow"
+        }
+      }
+    }
+  },
+  "permission": {
+    "bash": "ask",
+    "edit": "ask"
+  }
+}

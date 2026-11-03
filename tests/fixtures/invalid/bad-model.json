@@ -1,0 +1,4 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "whiterabbitneo-2.5-qwen-2.5-coder-7b"
+}

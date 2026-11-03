@@ -1,0 +1,225 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "anthropic/claude-sonnet-4-5",
+  "small_model": "anthropic/claude-sonnet-4-5",
+  "default_agent": "ot-protocol-analyst",
+  "agent": {
+    "ot-recon": {
+      "description": "OT/ICS asset inventory and passive reconnaissance",
+      "mode": "subagent",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/ot-recon.md}",
+      "permission": {
+        "edit": "deny",
+        "bash": "ask"
+      }
+    },
+    "ot-protocol-analyst": {
+      "description": "OT protocol analysis: Modbus, S7, OPC UA, IEC 104, DNP3, EtherNet/IP, PROFINET",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/ot-protocol-analyst.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": "ask"
+      }
+    },
+    "ot-segmentation-reviewer": {
+      "description": "OT segmentation review: zones, conduits, firewall/ACL, Purdue model",
+      "mode": "subagent",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/ot-segmentation-reviewer.md}",
+      "permission": {
+        "edit": "deny",
+        "bash": "ask"
+      }
+    },
+    "ot-vuln-researcher": {
+      "description": "OT/ICS vulnerability research, CVE and vendor bulletins, compensating controls",
+      "mode": "subagent",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/ot-vuln-researcher.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": "ask"
+      }
+    },
+    "ot-incident-responder": {
+      "description": "OT incident response and forensics: timeline, containment, evidence",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/ot-incident-responder.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": "ask"
+      }
+    },
+    "ot-network-designer": {
+      "description": "OT network design: VLAN, rings, redundancy, documentation",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/ot-network-designer.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": "ask"
+      }
+    }
+  },
+  "instructions": [
+    "instructions/context-protocol.md",
+    "AGENTS.md",
+    "instructions/ot-safety.md"
+  ],
+  "skills": {
+    "paths": [
+      "~/.config/opencode/skills"
+    ]
+  },
+  "autoupdate": "notify",
+  "permission": {
+    "bash": "ask",
+    "edit": "ask",
+    "skill": {
+      "*": "deny",
+      "analyzing-network-traffic-with-wireshark": "allow",
+      "cavecrew": "allow",
+      "caveman": "allow",
+      "caveman-commit": "allow",
+      "caveman-compress": "allow",
+      "caveman-help": "allow",
+      "caveman-review": "allow",
+      "caveman-stats": "allow",
+      "code-review-and-quality": "allow",
+      "compress": "allow",
+      "debugging-and-error-recovery": "allow",
+      "dispatching-parallel-agents": "allow",
+      "grill-me": "allow",
+      "ot-network-audit": "allow",
+      "security-audit": "allow",
+      "systematic-debugging": "allow",
+      "traffic-analysis-pcap": "allow",
+      "verification-before-completion": "allow",
+      "wireshark-analysis": "allow",
+      "writing-plans": "allow"
+    }
+  },
+  "snapshot": true,
+  "watcher": {
+    "ignore": [
+      "node_modules",
+      "dist",
+      ".git",
+      "*.log"
+    ]
+  },
+  "mcp": {
+    "servers": {
+      "ssh": {
+        "type": "local",
+        "command": [
+          "uvx",
+          "--from",
+          "slepp-ssh-mcp",
+          "ssh-mcp"
+        ],
+        "disabled": false
+      },
+      "docker": {
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "mcp-docker-server"
+        ],
+        "disabled": false
+      },
+      "filesystem": {
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "@modelcontextprotocol/server-filesystem"
+        ],
+        "environment": {
+          "ALLOWED_DIRECTORIES": "/home/YOURUSER"
+        },
+        "disabled": false
+      },
+      "proxmox": {
+        "type": "local",
+        "command": [
+          "uvx",
+          "proxmox-mcp-server"
+        ],
+        "environment": {
+          "PROXMOX_HOST": "192.168.1.10",
+          "PROXMOX_PORT": "8006",
+          "PROXMOX_USER": "root@pam",
+          "PROXMOX_TOKEN_NAME": "mcp",
+          "PROXMOX_TOKEN_VALUE": "{env:PROXMOX_TOKEN_VALUE}",
+          "PROXMOX_VERIFY_SSL": "0"
+        },
+        "disabled": false
+      },
+      "playwright": {
+        "type": "local",
+        "command": [
+          "npx",
+          "@playwright/mcp@latest",
+          "--browser=firefox"
+        ],
+        "disabled": false
+      },
+      "duckduckgo": {
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "ddg-mcp-search"
+        ],
+        "disabled": false
+      },
+      "brave-search": {
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "@modelcontextprotocol/server-brave-search"
+        ],
+        "environment": {
+          "BRAVE_API_KEY": "{env:BRAVE_API_KEY}"
+        },
+        "disabled": true
+      }
+    }
+  },
+  "plugins": [
+    "@tarquinen/opencode-dcp@3.2.0",
+    "opencode-supermemory",
+    "opencode-handoff@0.6.1",
+    "opencode-usage-monitor@3.1.0"
+  ],
+  "commands": {
+    "profile": {
+      "template": "echo \"Текущий профиль: $(basename $(dirname ${OPENCODE_CONFIG:-$HOME/.config/opencode/opencode.json}))\"",
+      "description": "Показать текущий профиль opencode"
+    }
+  },
+  "compaction": {
+    "auto": true,
+    "keep": {
+      "tokens": 20000
+    },
+    "buffer": 24000
+  },
+  "references": {
+    "context": {
+      "path": "~/.config/opencode/context",
+      "description": "Context ledger. Read INDEX.md first, then only the needed file."
+    },
+    "docs": {
+      "path": "~/.local/share/opencode/opencode-synced/repo/docs",
+      "description": "Project docs; open only the relevant page."
+    }
+  }
+}

@@ -1,0 +1,262 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "anthropic/claude-sonnet-4-5",
+  "small_model": "anthropic/claude-sonnet-4-5",
+  "default_agent": "infra-engineer",
+  "agent": {
+    "infra-engineer": {
+      "description": "Infrastructure engineer — Proxmox, Ansible, Terraform, Docker, K8s",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/infra-engineer.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "sre": {
+      "description": "Site Reliability Engineer — SLO/SLI, incindents, observability, capacity",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/sre.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "mlops-engineer": {
+      "description": "MLOps engineer — ML pipelines, model registry, inference, GPU capacity",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/mlops-engineer.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "gitops-engineer": {
+      "description": "GitOps engineer — Argo CD/Flux, Helm/Kustomize, secrets, progressive delivery",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/gitops-engineer.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "security-auditor": {
+      "description": "Infrastructure security audit",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/security-auditor.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "devops-reviewer": {
+      "description": "Infrastructure code review — Terraform, Ansible, Docker, K8s",
+      "mode": "subagent",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/devops-reviewer.md}",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      }
+    }
+  },
+  "instructions": [
+    "instructions/context-protocol.md",
+    "AGENTS.md"
+  ],
+  "skills": {
+    "paths": [
+      "~/.config/opencode/skills"
+    ]
+  },
+  "autoupdate": "notify",
+  "permission": {
+    "bash": "ask",
+    "edit": "ask",
+    "skill": {
+      "*": "deny",
+      "agent-vault": "allow",
+      "alerting-oncall": "allow",
+      "ansible-validator": "allow",
+      "cavecrew": "allow",
+      "caveman": "allow",
+      "caveman-commit": "allow",
+      "caveman-compress": "allow",
+      "caveman-help": "allow",
+      "caveman-review": "allow",
+      "caveman-stats": "allow",
+      "code-review-and-quality": "allow",
+      "compress": "allow",
+      "debugging-and-error-recovery": "allow",
+      "devops-rollout-plan": "allow",
+      "devops-troubleshooter": "allow",
+      "dispatching-parallel-agents": "allow",
+      "docker-build-strategies": "allow",
+      "docker-kubernetes": "allow",
+      "find-skills": "allow",
+      "grill-me": "allow",
+      "incident-runbook-templates": "allow",
+      "kpi-dashboard-design": "allow",
+      "log-analysis": "allow",
+      "oncall-irm": "allow",
+      "postgresql-optimization": "allow",
+      "postgresql-table-design": "allow",
+      "postmortem-writer": "allow",
+      "proxmox-admin": "allow",
+      "security-audit": "allow",
+      "security-docker": "allow",
+      "security-secrets": "allow",
+      "supabase-postgres-best-practices": "allow",
+      "systematic-debugging": "allow",
+      "terraform-skill": "allow",
+      "traffic-analysis-pcap": "allow",
+      "verification-before-completion": "allow",
+      "wireshark-analysis": "allow",
+      "writing-plans": "allow"
+    }
+  },
+  "snapshot": true,
+  "watcher": {
+    "ignore": [
+      "node_modules",
+      "dist",
+      ".git",
+      "*.log"
+    ]
+  },
+  "mcp": {
+    "servers": {
+      "proxmox": {
+        "type": "local",
+        "command": [
+          "uvx",
+          "proxmox-mcp-server"
+        ],
+        "environment": {
+          "PROXMOX_HOST": "192.168.1.10",
+          "PROXMOX_PORT": "8006",
+          "PROXMOX_USER": "root@pam",
+          "PROXMOX_TOKEN_NAME": "mcp",
+          "PROXMOX_TOKEN_VALUE": "{env:PROXMOX_TOKEN_VALUE}",
+          "PROXMOX_VERIFY_SSL": "0"
+        },
+        "disabled": false
+      },
+      "ansible": {
+        "type": "local",
+        "command": [
+          "ansible-mcp",
+          "serve"
+        ],
+        "disabled": false
+      },
+      "opentofu": {
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "@opentofu/opentofu-mcp-server"
+        ],
+        "disabled": false
+      },
+      "docker": {
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "mcp-docker-server"
+        ],
+        "disabled": false
+      },
+      "ssh": {
+        "type": "local",
+        "command": [
+          "uvx",
+          "--from",
+          "slepp-ssh-mcp",
+          "ssh-mcp"
+        ],
+        "disabled": false
+      },
+      "postgres": {
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "@yawlabs/postgres-mcp"
+        ],
+        "environment": {
+          "DATABASE_URL": "{env:DATABASE_URL}"
+        },
+        "disabled": false
+      },
+      "gitlab-official-yandex": {
+        "type": "local",
+        "command": [
+          "gitlab-mcp-vault",
+          "yandex"
+        ],
+        "disabled": false
+      },
+      "gitlab-official-gmail": {
+        "type": "local",
+        "command": [
+          "gitlab-mcp-vault",
+          "gmail"
+        ],
+        "disabled": false
+      },
+      "gitlab-work": {
+        "type": "local",
+        "command": [
+          "gitlab-mcp-vault",
+          "work"
+        ],
+        "disabled": false
+      },
+      "gitlab-personal": {
+        "type": "local",
+        "command": [
+          "gitlab-mcp-vault",
+          "personal"
+        ],
+        "disabled": true
+      }
+    }
+  },
+  "plugins": [
+    "@tarquinen/opencode-dcp@3.2.0",
+    "opencode-supermemory",
+    "opencode-gemini-auth",
+    "opencode-handoff@0.6.1",
+    "opencode-usage-monitor@3.1.0"
+  ],
+  "commands": {
+    "profile": {
+      "template": "echo \"Текущий профиль: $(basename $(dirname ${OPENCODE_CONFIG:-$HOME/.config/opencode/opencode.json}))\"",
+      "description": "Показать текущий профиль opencode"
+    }
+  },
+  "compaction": {
+    "auto": true,
+    "keep": {
+      "tokens": 20000
+    },
+    "buffer": 24000
+  },
+  "references": {
+    "context": {
+      "path": "~/.config/opencode/context",
+      "description": "Context ledger. Read INDEX.md first, then only the needed file."
+    },
+    "docs": {
+      "path": "~/.local/share/opencode/opencode-synced/repo/docs",
+      "description": "Project docs; open only the relevant page."
+    }
+  }
+}

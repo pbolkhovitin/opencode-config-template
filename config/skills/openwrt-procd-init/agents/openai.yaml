@@ -1,0 +1,4 @@
+interface:
+  display_name: "Openwrt Procd Init"
+  short_description: "Write, register, and debug OpenWrt init scripts in /etc/init.d…"
+  default_prompt: "Use $openwrt-procd-init to help with my current task: Write, register, and debug OpenWrt init scripts in /etc/init.d using rc.common and the procd service manager."

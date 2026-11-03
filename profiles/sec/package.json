@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@opencode-ai/plugin": "1.19.4",
+    "@tarquinen/opencode-dcp": "3.2.0",
+    "opencode-handoff": "0.6.1",
+    "opencode-supermemory": "latest",
+    "opencode-usage-monitor": "3.1.0"
+  }
+}

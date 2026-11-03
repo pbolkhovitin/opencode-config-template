@@ -1,0 +1,32 @@
+data/auth.json
+__pycache__/
+*.pyc
+
+# Dependencies (installed per-machine via setup.sh / opencode plugin)
+node_modules/
+profiles/*/node_modules/
+
+# Local opencode runtime (created when opencode runs from this repo dir)
+.opencode/
+
+# Session DB transient files
+*.db-shm
+*.db-wal
+*.part-shm
+*.part-wal
+
+# Сессии в git НЕ храним (opencode-synced: includeSessions=false)
+# Живой дамп: ~/.local/share/opencode/opencode.db
+data/*.db
+data/*.db-*
+.opencode-synced/chunks/
+
+# --- hygiene (2026-10-24) ---
+# Browser profile with cookies/logins/Telegram session: never track
+.gl-profile/
+config/.agents/context/tooling/.gl-profile/
+# Session payloads and prompt history stay local
+data/storage/
+data/*.jsonl
+state/prompt-history.jsonl
+state/prompt-stash.jsonl

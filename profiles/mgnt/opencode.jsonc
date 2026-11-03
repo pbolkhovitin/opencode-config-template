@@ -1,0 +1,159 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "anthropic/claude-sonnet-4-5",
+  "small_model": "anthropic/claude-sonnet-4-5",
+  "default_agent": "prd-writer",
+  "agent": {
+    "prd-writer": {
+      "description": "Product Manager — PRD, user stories, specs, OKRs",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/prd-writer.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": "deny"
+      }
+    },
+    "incident-commander": {
+      "description": "Incident response — triage, containment, post-mortem",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/incident-commander.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "data-analyst": {
+      "description": "Data analyst — SQL queries, metrics, dashboards, read-only DB",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/data-analyst.md}",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      }
+    }
+  },
+  "instructions": [
+    "instructions/context-protocol.md",
+    "AGENTS.md"
+  ],
+  "skills": {
+    "paths": [
+      "~/.config/opencode/skills"
+    ]
+  },
+  "autoupdate": "notify",
+  "permission": {
+    "bash": "ask",
+    "edit": "ask",
+    "skill": {
+      "*": "deny",
+      "agent-vault": "allow",
+      "brainstorming": "allow",
+      "breakdown-epic-pm": "allow",
+      "cavecrew": "allow",
+      "caveman": "allow",
+      "caveman-commit": "allow",
+      "caveman-compress": "allow",
+      "caveman-help": "allow",
+      "caveman-review": "allow",
+      "caveman-stats": "allow",
+      "code-review-and-quality": "allow",
+      "compress": "allow",
+      "debugging-and-error-recovery": "allow",
+      "dispatching-parallel-agents": "allow",
+      "find-skills": "allow",
+      "grill-me": "allow",
+      "requesting-code-review": "allow",
+      "systematic-debugging": "allow",
+      "to-prd": "allow",
+      "verification-before-completion": "allow",
+      "writing-plans": "allow"
+    }
+  },
+  "snapshot": true,
+  "watcher": {
+    "ignore": [
+      "node_modules",
+      "dist",
+      ".git",
+      "*.log"
+    ]
+  },
+  "mcp": {
+    "servers": {
+      "ssh": {
+        "type": "local",
+        "command": [
+          "uvx",
+          "--from",
+          "slepp-ssh-mcp",
+          "ssh-mcp"
+        ],
+        "disabled": false
+      },
+      "postgres": {
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "@yawlabs/postgres-mcp"
+        ],
+        "environment": {
+          "DATABASE_URL": "{env:DATABASE_URL}"
+        },
+        "disabled": false
+      },
+      "playwright": {
+        "type": "local",
+        "command": [
+          "npx",
+          "@playwright/mcp@latest",
+          "--browser=firefox"
+        ],
+        "disabled": false
+      },
+      "docker": {
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "mcp-docker-server"
+        ],
+        "disabled": false
+      }
+    }
+  },
+  "plugins": [
+    "@tarquinen/opencode-dcp@3.2.0",
+    "opencode-supermemory",
+    "opencode-gemini-auth",
+    "opencode-handoff@0.6.1",
+    "opencode-usage-monitor@3.1.0"
+  ],
+  "commands": {
+    "profile": {
+      "template": "echo \"Текущий профиль: $(basename $(dirname ${OPENCODE_CONFIG:-$HOME/.config/opencode/opencode.json}))\"",
+      "description": "Показать текущий профиль opencode"
+    }
+  },
+  "compaction": {
+    "auto": true,
+    "keep": {
+      "tokens": 20000
+    },
+    "buffer": 24000
+  },
+  "references": {
+    "context": {
+      "path": "~/.config/opencode/context",
+      "description": "Context ledger. Read INDEX.md first, then only the needed file."
+    },
+    "docs": {
+      "path": "~/.local/share/opencode/opencode-synced/repo/docs",
+      "description": "Project docs; open only the relevant page."
+    }
+  }
+}

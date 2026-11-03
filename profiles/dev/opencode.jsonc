@@ -1,0 +1,370 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "anthropic/claude-sonnet-4-5",
+  "small_model": "anthropic/claude-sonnet-4-5",
+  "default_agent": "build",
+  "agent": {
+    "feature-planner": {
+      "description": "Analyzes requirements and produces implementation plans without writing code",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "./prompts/feature-planner.md",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      }
+    },
+    "code-architect": {
+      "description": "Architecture and planning specialist. Does not write code.",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/code-architect.md}",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      }
+    },
+    "senior-python-dev": {
+      "description": "Senior Python developer — FastAPI, SQLAlchemy, asyncio, pytest",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/senior-python-dev.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "senior-js-ts-dev": {
+      "description": "Senior JS/TS developer — React, Next.js App Router, Node.js",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/senior-js-ts-dev.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "senior-php-dev": {
+      "description": "Senior PHP developer — Symfony/Laravel, PHPStan max, secure SQL/templates",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/senior-php-dev.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "senior-cpp-dev": {
+      "description": "Senior C/C++ developer — C++20/23, RAII, sanitizers, embedded",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/senior-cpp-dev.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "senior-java-dev": {
+      "description": "Senior Java developer — Spring Boot 3, Hibernate, Kafka",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/senior-java-dev.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "senior-go-dev": {
+      "description": "Senior Go developer — chi/gRPC, sqlx, K8s-native",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/senior-go-dev.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "senior-rust-dev": {
+      "description": "Senior Rust developer — Axum/tokio, SQLx, zero-cost abstractions",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/senior-rust-dev.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "senior-nextjs-dev": {
+      "description": "Senior Next.js developer — App Router, RSC, Server Actions, Tailwind",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/senior-nextjs-dev.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "appsec-auditor": {
+      "description": "AppSec SAST — PHP, TS, JS via semgrep, dependency audit",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/appsec-auditor.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "security-tool-developer": {
+      "description": "Python security tooling — pwntools, scapy, async scanning",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/security-tool-developer.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "code-reviewer": {
+      "description": "Reviews code for correctness, security, performance across all languages",
+      "mode": "subagent",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/code-reviewer.md}",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      }
+    },
+    "platform-engineer": {
+      "description": "Kubernetes, Docker, CI/CD specialist",
+      "mode": "subagent",
+      "temperature": 0.1,
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    }
+  },
+  "instructions": [
+    "instructions/context-protocol.md",
+    "AGENTS.md",
+    "instructions/bash.md",
+    "instructions/c-cpp.md",
+    "instructions/core.md",
+    "instructions/elk.md",
+    "instructions/golang.md",
+    "instructions/java.md",
+    "instructions/js-ts.md",
+    "instructions/kubernetes.md",
+    "instructions/low-level.md",
+    "instructions/php.md",
+    "instructions/python.md",
+    "instructions/rust.md"
+  ],
+  "skills": {
+    "paths": [
+      "~/.config/opencode/skills"
+    ]
+  },
+  "autoupdate": "notify",
+  "permission": {
+    "bash": "ask",
+    "edit": "ask",
+    "skill": {
+      "*": "deny",
+      "accessibility-a11y": "allow",
+      "agent-vault": "allow",
+      "brainstorming": "allow",
+      "cavecrew": "allow",
+      "caveman": "allow",
+      "caveman-commit": "allow",
+      "caveman-compress": "allow",
+      "caveman-help": "allow",
+      "caveman-review": "allow",
+      "caveman-stats": "allow",
+      "code-review-and-quality": "allow",
+      "compress": "allow",
+      "debugging-and-error-recovery": "allow",
+      "devops-rollout-plan": "allow",
+      "dispatching-parallel-agents": "allow",
+      "docker-build-strategies": "allow",
+      "docker-kubernetes": "allow",
+      "fastapi-python": "allow",
+      "find-skills": "allow",
+      "finishing-a-development-branch": "allow",
+      "grill-me": "allow",
+      "jwt-security": "allow",
+      "log-analysis": "allow",
+      "nextjs-react-typescript": "allow",
+      "postgresql-optimization": "allow",
+      "postgresql-table-design": "allow",
+      "python": "allow",
+      "python-cybersecurity-tool-development": "allow",
+      "requesting-code-review": "allow",
+      "security-audit": "allow",
+      "security-docker": "allow",
+      "security-secrets": "allow",
+      "supabase-postgres-best-practices": "allow",
+      "systematic-debugging": "allow",
+      "test-driven-development": "allow",
+      "verification-before-completion": "allow",
+      "web-scraping": "allow",
+      "webapp-testing": "allow",
+      "writing-plans": "allow"
+    }
+  },
+  "snapshot": true,
+  "watcher": {
+    "ignore": [
+      "node_modules",
+      "dist",
+      ".git",
+      "*.log"
+    ]
+  },
+  "mcp": {
+    "servers": {
+      "postgres": {
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "@yawlabs/postgres-mcp"
+        ],
+        "environment": {
+          "DATABASE_URL": "{env:DATABASE_URL}"
+        },
+        "disabled": false
+      },
+      "docker": {
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "mcp-docker-server"
+        ],
+        "disabled": false
+      },
+      "playwright": {
+        "type": "local",
+        "command": [
+          "npx",
+          "@playwright/mcp@latest",
+          "--browser=firefox"
+        ],
+        "disabled": false
+      },
+      "filesystem": {
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "@modelcontextprotocol/server-filesystem"
+        ],
+        "environment": {
+          "ALLOWED_DIRECTORIES": "/home/YOURUSER"
+        },
+        "disabled": false
+      },
+      "brave-search": {
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "@modelcontextprotocol/server-brave-search"
+        ],
+        "environment": {
+          "BRAVE_API_KEY": "{env:BRAVE_API_KEY}"
+        },
+        "disabled": true
+      },
+      "duckduckgo": {
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "ddg-mcp-search"
+        ],
+        "disabled": false
+      },
+      "ssh": {
+        "type": "local",
+        "command": [
+          "uvx",
+          "--from",
+          "slepp-ssh-mcp",
+          "ssh-mcp"
+        ],
+        "disabled": false
+      },
+      "github": {
+        "type": "local",
+        "command": [
+          "github-mcp-vault"
+        ],
+        "disabled": false
+      },
+      "gitlab-official-yandex": {
+        "type": "local",
+        "command": [
+          "gitlab-mcp-vault",
+          "yandex"
+        ],
+        "disabled": false
+      },
+      "gitlab-official-gmail": {
+        "type": "local",
+        "command": [
+          "gitlab-mcp-vault",
+          "gmail"
+        ],
+        "disabled": false
+      },
+      "gitlab-work": {
+        "type": "local",
+        "command": [
+          "gitlab-mcp-vault",
+          "work"
+        ],
+        "disabled": false
+      },
+      "gitlab-personal": {
+        "type": "local",
+        "command": [
+          "gitlab-mcp-vault",
+          "personal"
+        ],
+        "disabled": true
+      }
+    }
+  },
+  "plugins": [
+    "@tarquinen/opencode-dcp@3.2.0",
+    "opencode-supermemory",
+    "opencode-gemini-auth",
+    "opencode-handoff@0.6.1",
+    "opencode-usage-monitor@3.1.0"
+  ],
+  "commands": {
+    "profile": {
+      "template": "echo \"Текущий профиль: $(basename $(dirname ${OPENCODE_CONFIG:-$HOME/.config/opencode/opencode.json}))\"",
+      "description": "Показать текущий профиль opencode"
+    }
+  },
+  "compaction": {
+    "auto": true,
+    "keep": {
+      "tokens": 20000
+    },
+    "buffer": 24000
+  },
+  "references": {
+    "context": {
+      "path": "~/.config/opencode/context",
+      "description": "Context ledger. Read INDEX.md first, then only the needed file."
+    },
+    "docs": {
+      "path": "~/.local/share/opencode/opencode-synced/repo/docs",
+      "description": "Project docs; open only the relevant page."
+    }
+  }
+}

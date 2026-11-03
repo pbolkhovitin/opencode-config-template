@@ -1,0 +1,16 @@
+{
+  "repo": {
+    "owner": "YOUR_ORG",
+    "name": "my-opencode-config"
+  },
+  "includeSecrets": false,
+  "includeMcpSecrets": false,
+  "includeSessions": false,
+  "sessionBackend": {
+    "type": "git"
+  },
+  "includeModelFavorites": true,
+  "includeOpencodeSkills": true,
+  "includeAgentsDir": false,
+  "includePromptStash": false
+}

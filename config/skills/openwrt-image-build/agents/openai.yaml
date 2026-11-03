@@ -1,0 +1,4 @@
+interface:
+  display_name: "Openwrt Image Build"
+  short_description: "Build customized OpenWrt images with the official Image…"
+  default_prompt: "Use $openwrt-image-build to help with my current task: Build customized OpenWrt images with the official Image Builder — download and cache the IB, layer PACKAGES (common/tier/arch), inject a FILES= rootfs overlay with correct…"

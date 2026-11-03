@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@opencode-ai/plugin": "1.19.4",
+    "opencode-handoff": "0.6.1",
+    "opencode-usage-monitor": "3.1.0"
+  }
+}

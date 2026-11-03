@@ -1,0 +1,192 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "anthropic/claude-sonnet-4-5",
+  "small_model": "anthropic/claude-sonnet-4-5",
+  "default_agent": "pentester",
+  "agent": {
+    "ctf-reverse-engineer": {
+      "description": "Reverse engineering — Ghidra, IDA, radare2, deobfuscation, patching",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/ctf-reverse-engineer.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "ctf-pwner": {
+      "description": "Binary exploitation — ROP, heap, format string, pwntools",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/ctf-pwner.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "ctf-web-hacker": {
+      "description": "Web CTF — SQLi, XSS, SSTI, SSRF, JWT, GraphQL",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/ctf-web-hacker.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "pentester": {
+      "description": "Penetration testing — recon, exploitation, reporting",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/pentester.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "appsec-auditor": {
+      "description": "AppSec SAST — PHP, TS, JS via semgrep, dependency audit",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/appsec-auditor.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "threat-intel": {
+      "description": "Threat intelligence — MITRE ATT&CK, CVE, Exploit-DB, detection research",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "{file:./prompts/personas/threat-intel.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    }
+  },
+  "instructions": [
+    "instructions/context-protocol.md",
+    "AGENTS.md"
+  ],
+  "skills": {
+    "paths": [
+      "~/.config/opencode/skills"
+    ]
+  },
+  "autoupdate": "notify",
+  "permission": {
+    "bash": "ask",
+    "edit": "ask",
+    "skill": {
+      "*": "deny",
+      "agent-vault": "allow",
+      "analyzing-network-traffic-with-wireshark": "allow",
+      "cavecrew": "allow",
+      "caveman": "allow",
+      "caveman-commit": "allow",
+      "caveman-compress": "allow",
+      "caveman-help": "allow",
+      "caveman-review": "allow",
+      "caveman-stats": "allow",
+      "code-review-and-quality": "allow",
+      "compress": "allow",
+      "ctf-crypto": "allow",
+      "ctf-forensics": "allow",
+      "ctf-malware": "allow",
+      "ctf-osint": "allow",
+      "ctf-pwn": "allow",
+      "ctf-reverse": "allow",
+      "ctf-web": "allow",
+      "debugging-and-error-recovery": "allow",
+      "dispatching-parallel-agents": "allow",
+      "exploit-dev-expert": "allow",
+      "find-skills": "allow",
+      "grill-me": "allow",
+      "jwt-security": "allow",
+      "log-analysis": "allow",
+      "malware-analyst": "allow",
+      "memory-forensics-volatility": "allow",
+      "mode-exploit": "allow",
+      "mode-pentest": "allow",
+      "penetration-testing": "allow",
+      "pentest-expert": "allow",
+      "python-cybersecurity-tool-development": "allow",
+      "reverse-engineer": "allow",
+      "security-audit": "allow",
+      "security-docker": "allow",
+      "security-secrets": "allow",
+      "smtp-penetration-testing": "allow",
+      "sqlmap-database-pentesting": "allow",
+      "steganography-techniques": "allow",
+      "systematic-debugging": "allow",
+      "threat-intel": "allow",
+      "traffic-analysis-pcap": "allow",
+      "verification-before-completion": "allow",
+      "web-security-expert": "allow",
+      "wireshark-analysis": "allow",
+      "writing-plans": "allow"
+    }
+  },
+  "snapshot": true,
+  "watcher": {
+    "ignore": [
+      "node_modules",
+      "dist",
+      ".git",
+      "*.log"
+    ]
+  },
+  "mcp": {
+    "servers": {
+      "ssh": {
+        "type": "local",
+        "command": [
+          "uvx",
+          "--from",
+          "slepp-ssh-mcp",
+          "ssh-mcp"
+        ],
+        "disabled": false
+      },
+      "docker": {
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "mcp-docker-server"
+        ],
+        "disabled": false
+      }
+    }
+  },
+  "plugins": [
+    "@tarquinen/opencode-dcp@3.2.0",
+    "opencode-supermemory",
+    "opencode-handoff@0.6.1",
+    "opencode-usage-monitor@3.1.0"
+  ],
+  "commands": {
+    "profile": {
+      "template": "echo \"Текущий профиль: $(basename $(dirname ${OPENCODE_CONFIG:-$HOME/.config/opencode/opencode.json}))\"",
+      "description": "Показать текущий профиль opencode"
+    }
+  },
+  "compaction": {
+    "auto": true,
+    "keep": {
+      "tokens": 20000
+    },
+    "buffer": 24000
+  },
+  "references": {
+    "context": {
+      "path": "~/.config/opencode/context",
+      "description": "Context ledger. Read INDEX.md first, then only the needed file."
+    },
+    "docs": {
+      "path": "~/.local/share/opencode/opencode-synced/repo/docs",
+      "description": "Project docs; open only the relevant page."
+    }
+  }
+}

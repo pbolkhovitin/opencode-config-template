@@ -1,0 +1,120 @@
+#!/usr/bin/env bash
+# gitlab-mcp-vault — GitLab MCP с токеном из личного Vault (instance personal).
+#
+# Четыре GitLab-сервера (official — два аккаунта на разные почты):
+#   yandex     — gitlab.com, официальный аккаунт на Yandex
+#   gmail      — gitlab.com, официальный аккаунт на Gmail
+#   work       — gitlab.example.com (в локальной сети можно gitlab.internal.example.com)
+#   personal   — личный GitLab (заготовка, токен добавляется позже)
+#
+# Токен читается из secret/agent/<project>/<name> и передаётся только в env
+# дочернего процесса MCP-сервера. Значение никогда не печатается.
+#
+#   gitlab-mcp-vault <yandex|gmail|work|personal>          запустить MCP (stdio)
+#   gitlab-mcp-vault <yandex|gmail|work|personal> --check  проверить наличие секрета
+#   gitlab-mcp-vault <yandex|gmail|work|personal> --check-api  проверить токен через API
+#
+# Переопределения:
+#   GITLAB_VAULT_PROJECT   (по умолчанию YOUR_PROJECT)
+#   GITLAB_VAULT_INSTANCE  (по умолчанию personal)
+#   GITLAB_WORK_API_URL    (по умолчанию https://gitlab.example.com/api/v4)
+#   GITLAB_OFFICIAL_YANDEX_API_URL, GITLAB_OFFICIAL_GMAIL_API_URL, GITLAB_PERSONAL_API_URL
+set -euo pipefail
+
+usage() {
+  cat >&2 <<'EOF'
+usage: gitlab-mcp-vault <yandex|gmail|work|personal> [--check|--check-api]
+
+  yandex     gitlab.com, официальный аккаунт на Yandex
+  gmail      gitlab.com, официальный аккаунт на Gmail
+  work       gitlab.example.com (alt: gitlab.internal.example.com)
+  personal   личный GitLab
+
+  --check      проверить наличие секрета в Vault
+  --check-api  проверить токен запросом к API (HTTP 200)
+
+Токены: Vault instance personal, project YOUR_PROJECT.
+  yandex     secret/agent/YOUR_PROJECT/gitlab official yandex pat
+  gmail      secret/agent/YOUR_PROJECT/gitlab official gmail pat
+  work       secret/agent/YOUR_PROJECT/gitlab.example.com PAT
+  personal   secret/agent/YOUR_PROJECT/gitlab personal pat
+EOF
+}
+
+[[ $# -ge 1 ]] || { usage; exit 2; }
+
+name=$1
+shift
+
+case "$name" in
+  yandex)
+    secret='gitlab official yandex pat'
+    api_url="${GITLAB_OFFICIAL_YANDEX_API_URL:-https://gitlab.com/api/v4}"
+    ;;
+  gmail)
+    secret='gitlab official gmail pat'
+    api_url="${GITLAB_OFFICIAL_GMAIL_API_URL:-https://gitlab.com/api/v4}"
+    ;;
+  work)
+    secret='gitlab.example.com PAT'
+    api_url="${GITLAB_WORK_API_URL:-https://gitlab.example.com/api/v4}"
+    ;;
+  personal)
+    secret='gitlab personal pat'
+    api_url="${GITLAB_PERSONAL_API_URL:-https://gitlab.com/api/v4}"
+    ;;
+  -h|--help)
+    usage
+    exit 0
+    ;;
+  *)
+    usage
+    exit 2
+    ;;
+esac
+
+project="${GITLAB_VAULT_PROJECT:-YOUR_PROJECT}"
+instance="${GITLAB_VAULT_INSTANCE:-personal}"
+export GITLAB_API_URL="$api_url"
+
+agent_vault="${AGENT_VAULT_BIN:-}"
+if [[ -z $agent_vault ]]; then
+  agent_vault=$(command -v agent-vault || true)
+fi
+if [[ -z $agent_vault ]]; then
+  agent_vault="$HOME/.local/bin/agent-vault"
+fi
+if [[ ! -x $agent_vault ]]; then
+  echo "gitlab-mcp-vault: agent-vault не найден ($agent_vault)" >&2
+  exit 127
+fi
+
+if [[ "${1:-}" == "--check-api" ]]; then
+  "$agent_vault" use "$secret" --project "$project" --instance "$instance" -- '
+    code=$(curl -sS --max-time 15 -o /dev/null -w "%{http_code}" \
+      -H "PRIVATE-TOKEN: ${VAULT_PASSWORD:?empty GitLab token in Vault}" \
+      "${GITLAB_API_URL%/}/user" 2>/dev/null || echo 000)
+    printf "api: HTTP %s\n" "$code"
+    [[ $code == 200 ]]
+  '
+  exit $?
+fi
+
+if [[ "${1:-}" == "--check" ]]; then
+  "$agent_vault" use "$secret" --project "$project" --instance "$instance" -- '
+    if [[ -n ${VAULT_PASSWORD:-} ]]; then
+      echo "secret: OK"
+    else
+      echo "secret: EMPTY" >&2
+      exit 1
+    fi
+  '
+  printf 'api: %s\n' "$api_url"
+  exit 0
+fi
+
+# GITLAB_API_URL наследуется дочерним процессом agent-vault → MCP.
+exec "$agent_vault" use "$secret" --project "$project" --instance "$instance" -- '
+  export GITLAB_PERSONAL_ACCESS_TOKEN="${VAULT_PASSWORD:?empty GitLab token in Vault}"
+  exec npx -y @zereight/mcp-gitlab@latest
+'
