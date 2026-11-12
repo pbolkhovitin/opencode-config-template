@@ -119,7 +119,10 @@
           "-y",
           "mcp-mermaid@latest"
         ],
-        "disabled": true
+        "environment": {
+          "npm_config_ignore_scripts": "true"
+        },
+        "disabled": false
       },
       "duckduckgo": {
         "type": "local",

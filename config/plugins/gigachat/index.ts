@@ -7,11 +7,11 @@
 //      the system trust store. The CA is installed for the OpenCode service via
 //      `NODE_EXTRA_CA_CERTS` (see `opencode service get`).
 //
-// The Authorization Key is kept in HashiCorp Vault
-// (`secret/agent/YOUR_PROJECT/gigachat api`). It is only ever present in the
-// environment of the `agent-vault use ... node token.mjs` child process, and
-// only the short-lived access token is returned to OpenCode. Nothing is written
-// to disk and nothing is logged.
+// The Authorization Key is taken from GIGACHAT_AUTH_KEY when set (no Vault),
+// otherwise from HashiCorp Vault (`secret/agent/<project>/<secret>`). It is only
+// ever present in the environment of the token child process, and only the
+// short-lived access token is returned to OpenCode. Nothing is written to disk
+// and nothing is logged.
 //
 // The provider itself is declared in opencode.json:
 //   provider.gigachat (npm @ai-sdk/openai-compatible, baseURL https://api.giga.chat/v1)
@@ -20,19 +20,30 @@ import { Plugin } from "@opencode/plugin"
 import { spawnSync } from "node:child_process"
 
 const PROVIDER_ID = "gigachat"
-const SECRET_NAME = "gigachat api"
-const VAULT_PROJECT = "YOUR_PROJECT"
+const SECRET_NAME = process.env.GIGACHAT_VAULT_SECRET ?? "gigachat api"
+const VAULT_PROJECT = process.env.GIGACHAT_VAULT_PROJECT ?? "YOUR_PROJECT"
 const TOKEN_SCRIPT = new URL("./token.mjs", import.meta.url).pathname
 
 let cached: { token: string; expires: number } | null = null
 
 function fetchToken(): string {
-  const res = spawnSync(
-    "agent-vault",
-    ["use", SECRET_NAME, "--project", VAULT_PROJECT, "--", "node", TOKEN_SCRIPT],
-    { encoding: "utf8", timeout: 45_000 },
-  )
-  if (res.error) throw new Error(`gigachat: cannot run agent-vault: ${res.error.message}`)
+  const envKey = process.env.GIGACHAT_AUTH_KEY
+  const res = envKey
+    ? spawnSync("node", [TOKEN_SCRIPT], {
+        encoding: "utf8",
+        timeout: 45_000,
+        env: { ...process.env, GIGACHAT_AUTH_KEY: envKey },
+      })
+    : spawnSync(
+        "agent-vault",
+        ["use", SECRET_NAME, "--project", VAULT_PROJECT, "--", "node", TOKEN_SCRIPT],
+        { encoding: "utf8", timeout: 45_000 },
+      )
+  if (res.error) {
+    throw new Error(
+      `gigachat: cannot run ${envKey ? "node" : "agent-vault"}: ${res.error.message}`,
+    )
+  }
   if (res.status !== 0) {
     throw new Error(
       `gigachat: token fetch failed (${res.status}): ${(res.stderr || "").trim().slice(0, 300)}`,

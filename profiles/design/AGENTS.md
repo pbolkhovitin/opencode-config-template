@@ -18,6 +18,7 @@
 | `playwright` (firefox) | сценарии: клик → состояние, регрессия форм и навигации |
 | `shadcn` | поиск/установка компонентов из реестров (`components.json` → `registries`) |
 | `duckduckgo` | референсы, поиск аналогов |
+| `mermaid` | схемы потоков/состояний в документации. Нужен Chromium 1254 из `~/.cache/ms-playwright` (`npx playwright@1.65 install chromium`, **без** `--with-deps`); `npm_config_ignore_scripts=true` отключает падающий postinstall |
 
 Выключены по умолчанию (нужен ключ):
 
@@ -26,7 +27,6 @@
 | `figma` | `FIGMA_API_KEY` (Figma REST token) | токена сейчас нет; при появлении — `disabled: false` |
 | `magic` (21st.dev) | `MAGIC_API_KEY` | 10k+ React/Tailwind компонентов; новый способ — `npx @21st-dev/cli@latest init` |
 | `unsplash` | `UNSPLASH_ACCESS_KEY` | стоковые фото с атрибуцией |
-| `mermaid` | — | схемы в документации; тянет playwright (~200 МБ браузеров) при первом старте, поэтому выключен. Разогрев: `npx -y mcp-mermaid@latest`, затем `disabled: false` |
 
 Наборы MCP на сессию скрываются командой `/mcp` (плагин `opencode-mcp-sets`).
 

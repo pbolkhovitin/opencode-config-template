@@ -15,7 +15,7 @@
 | `chrome-devtools` | MCP, local | скриншоты, DOM, контраст, performance, консоль |
 | `playwright` (firefox) | MCP, local | сценарии с кликами, регрессия форм |
 | `shadcn` | MCP, local | компоненты из реестров |
-| `mermaid` | MCP, local | схемы в документации — **выключен**: первый запуск тянет playwright-браузеры |
+| `mermaid` | MCP, local | схемы и графики в документации |
 | `duckduckgo` | MCP, local | референсы |
 | `figma`, `magic`, `unsplash` | MCP, local | **выключены**, нужен ключ |
 | `opencode-gpt-imagegen` | плагин | `gpt-image-2` через подписку ChatGPT |
@@ -107,7 +107,7 @@ cp -r /tmp/as/canvas-design /tmp/as/theme-factory ~/.config/opencode/skills/
 | `yctimlin/mcp_excalidraw` | 2.6k | stdio-тулкит + скилл, безопаснее для обычного клиента |
 | `DayuanJiang/next-ai-draw-io` | 36.9k | draw.io через чат, отдаёт редактируемый файл |
 | `simonkurtz-MSFT/drawio-mcp-server` | 82 | программная генерация draw.io |
-| `hustcc/mcp-mermaid` | 649 | mermaid → картинка. Зависит от `playwright` (браузеры ~200 МБ), поэтому в профиле выключен; разогрев — `npx -y mcp-mermaid@latest` |
+| `hustcc/mcp-mermaid` | 649 | mermaid → картинка (подключён). Postinstall делает `playwright install --with-deps chromium` и падает без sudo (`npx` выходит с кодом 1) — поэтому в профиле `npm_config_ignore_scripts=true`, а Chromium ставится отдельно: `npx playwright@1.65 install chromium` |
 | `MR901/mcp-plots`, `marzukia/charted` | — | графики/плоты |
 
 ### Изображения, иконки, 3D
@@ -167,3 +167,6 @@ bash tests/run.sh
   в `config/skills/` фиксируйте источник и лицензию.
 - **Секреты.** Только `{env:...}` + `agent-vault`. В конфигах и коммитах — имена
   переменных, не значения.
+- **MCP с postinstall.** Пакеты, чей `postinstall` требует root (`playwright
+  install --with-deps`), ломают `npx` целиком. Лечится `npm_config_ignore_scripts=true`
+  плюс ручной установкой браузеров.

@@ -80,3 +80,21 @@ agent-vault set 'gigachat api' --project YOUR_PROJECT   # или add с новы
 Провайдер и плагин лежат в default-конфиге (`config/opencode.json`,
 `config/plugins/gigachat/`) и раскатываются `setup.sh` во все профили.
 Env `NODE_EXTRA_CA_CERTS` — машинно-специфичный, в git не попадает.
+
+## Вариант без Vault (свой Authorization Key)
+
+Если Vault/agent-vault нет, плагин берёт ключ из окружения:
+
+```bash
+export GIGACHAT_AUTH_KEY='<Authorization Key: base64(client_id:client_secret)>'
+export GIGACHAT_CA_PATH="$HOME/.local/share/certs/russian-trusted/russian_trusted_root_ca_pem.crt"
+# optional: export GIGACHAT_SCOPE=GIGACHAT_API_PERS
+```
+
+`GIGACHAT_AUTH_KEY` должен быть именно Authorization Key (Basic-ключ), а не
+`client_secret` по отдельности: `token.mjs` сам делает OAuth-обмен на access_token.
+Провайдер `gigachat` не использует `apiKey` напрямую — плагин подставляет
+`Authorization: Bearer <access_token>` в `http.request`.
+
+Для Vault-варианта можно переопределить проект/секрет:
+`GIGACHAT_VAULT_PROJECT`, `GIGACHAT_VAULT_SECRET`.

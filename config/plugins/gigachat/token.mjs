@@ -1,7 +1,8 @@
 // GigaChat OAuth token fetcher.
-// Runs as a child of `agent-vault use 'gigachat api' -- node token.mjs`,
-// so the long-lived Authorization Key lives only in this process env
-// (VAULT_PASSWORD) and never reaches the OpenCode process.
+// Runs as a child of `agent-vault use ... -- node token.mjs`, or directly
+// when GIGACHAT_AUTH_KEY is set. The long-lived Authorization Key lives only in
+// this process env (VAULT_PASSWORD or GIGACHAT_AUTH_KEY) and never reaches the
+// OpenCode process.
 //
 // stdout: {"access_token":"...","expires_at":<ms>}
 // stderr: human-readable errors only (no secrets).
@@ -15,11 +16,11 @@ const CA_PATH =
   process.env.GIGACHAT_CA_PATH ||
   `${process.env.HOME}/.local/share/certs/russian-trusted/russian_trusted_root_ca_pem.crt`
 
-const key = process.env.VAULT_PASSWORD
+const key = process.env.VAULT_PASSWORD || process.env.GIGACHAT_AUTH_KEY
 const scope = process.env.VAULT_SCOPE || process.env.GIGACHAT_SCOPE || "GIGACHAT_API_PERS"
 
 if (!key) {
-  console.error("gigachat-token: VAULT_PASSWORD is empty (agent-vault use did not provide the credential)")
+  console.error("gigachat-token: VAULT_PASSWORD/GIGACHAT_AUTH_KEY is empty (set env or use agent-vault)")
   process.exit(2)
 }
 
