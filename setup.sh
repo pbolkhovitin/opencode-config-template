@@ -49,7 +49,7 @@ Dry run — no changes will be made.
   repo:      $REPO_DIR
   opencode:  $OPENCODE_BIN
   config:    $OPENCODE_CONFIG
-  profiles:  dev infra net sec ot mgnt
+  profiles:  dev infra net sec ot mgnt design
   actions:
     - install/verify opencode CLI
     - clone or update config repo
@@ -232,7 +232,7 @@ fi
 # Instruction removed: upstream shell_strategy.md is no longer vendored, and an
 # absolute path in `instructions` breaks portability. Re-add only with a repo-relative file.
 # ---------- Setup named profiles ----------
-step "6/12 — Setting up profiles: dev, infra, net, sec, ot, mgnt"
+step "6/12 — Setting up profiles: dev, infra, net, sec, ot, mgnt, design"
 setup_profile() {
     local name="$1"
     local config_dir="${OPENCODE_CONFIG}-${name}"
@@ -245,7 +245,7 @@ setup_profile() {
     [ -d "$repo_profile/instructions" ] && cp -r "$repo_profile/instructions" "$config_dir/" && ok "  instructions/ copied"
     [ -d "$repo_profile/command" ] && cp -r "$repo_profile/command" "$config_dir/" && ok "  command/ copied"
 }
-for profile in dev infra net sec ot mgnt; do setup_profile "$profile"; done
+for profile in dev infra net sec ot mgnt design; do setup_profile "$profile"; done
 ok "All profiles configured"
 
 # ---------- Install profile plugins ----------
@@ -273,7 +273,7 @@ print('\n'.join(d.get('plugins', d.get('plugin', []))))
     done <<< "$plugins"
     ok "  Plugins for $name installed"
 }
-for profile in dev infra net sec ot mgnt; do install_profile_plugins "$profile"; done
+for profile in dev infra net sec ot mgnt design; do install_profile_plugins "$profile"; done
 ok "All profile plugins installed"
 
 # ================================================================
@@ -585,6 +585,7 @@ alias oc-net="OPENCODE_CONFIG=~/.config/opencode-net/opencode.json opencode --st
 alias oc-mgnt="OPENCODE_CONFIG=~/.config/opencode-mgnt/opencode.json opencode --standalone --continue"
 alias oc-sec="OPENCODE_CONFIG=~/.config/opencode-sec/opencode.json opencode --standalone --continue"
 alias oc-ot="OPENCODE_CONFIG=~/.config/opencode-ot/opencode.json opencode --standalone --continue"
+alias oc-design="OPENCODE_CONFIG=~/.config/opencode-design/opencode.json opencode --standalone --continue"
 alias ocp="~/.local/bin/ocp"
 '
 if grep -q "alias oc-infra=" "$ZSHRC" 2>/dev/null; then
@@ -611,6 +612,7 @@ echo "    oc-net       - net (сети, маршрутизация, firewall, VP
 echo "    oc-mgnt      - management (PRD, data analysis, UAT)"
 echo "    oc-sec       - security (CTF, pentest, forensics, RE)"
 echo "    oc-ot        - OT/ICS (АСУ ТП сети, пассивный режим по умолчанию)"
+echo "    oc-design    - design (UI/UX, вёрстка, скриншот-приёмка, генерация картинок)"
 echo ""
 echo "  Security:"
 echo "    Network:      nmap, nmap-ncat, masscan, arp-scan, hping3, gobuster, socat, wireshark"

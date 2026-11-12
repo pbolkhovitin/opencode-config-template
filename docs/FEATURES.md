@@ -91,11 +91,10 @@ MCP: ssh, postgres (read-only), playwright, docker.
 | **playwright** | Браузер: клики, скриншоты | `npx @playwright/mcp@latest --browser=firefox` |
 | **filesystem** | Чтение/запись файлов | `npx @modelcontextprotocol/server-filesystem` |
 | **duckduckgo** | Бесплатный веб-поиск | `npx ddg-mcp-search` |
-| **github** | PR, issues, code review (официальный сервер) | `github-mcp-vault` (Vault + `ghcr.io/github/github-mcp-server`) |
-| **gitlab-work** | Рабочий GitLab: MR, issues, pipelines, wiki, releases | `gitlab-mcp-vault work` (Vault) |
-| **gitlab-official-yandex** | GitLab.com, аккаунт Yandex (включён) | `gitlab-mcp-vault yandex` |
-| **gitlab-official-gmail** | GitLab.com, аккаунт Gmail (включён) | `gitlab-mcp-vault gmail` |
-| **gitlab-personal** | Личный GitLab (позже) | `gitlab-mcp-vault personal` |
+| **github** | PR, issues, code review (официальный сервер) | `github-mcp-vault` (Vault `central` + `ghcr.io/github/github-mcp-server`) |
+| **gitlab-work** | Рабочий GitLab: MR, issues, pipelines, wiki, releases | `gitlab-mcp-vault work` (Vault `central`) |
+| **gitlab-official-yandex** | GitLab.com, аккаунт Yandex (API 200) | `gitlab-mcp-vault yandex` |
+| **gitlab-personal** | Локальный GitLab в podman (disabled) | `gitlab-mcp-vault personal` |
 
 ---
 

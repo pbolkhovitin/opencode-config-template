@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PROFILES_DIR = ROOT / "profiles"
 SKILLS_DIR = ROOT / "config" / "skills"
 
-CANONICAL = {"dev", "infra", "net", "sec", "ot", "mgnt"}
+CANONICAL = {"dev", "infra", "net", "sec", "ot", "mgnt", "design"}
 REMOVED = {"devops", "fullstack", "sec-lm"}
 
 REQUIRED_AGENTS = {
@@ -64,6 +64,7 @@ REQUIRED_AGENTS = {
         "ot-network-designer",
     },
     "mgnt": {"prd-writer", "incident-commander", "data-analyst"},
+    "design": {"ui-designer", "visual-qa"},
 }
 
 REQUIRED_MCP = {
@@ -71,7 +72,6 @@ REQUIRED_MCP = {
         "docker",
         "filesystem",
         "gitlab-official-yandex",
-        "gitlab-official-gmail",
         "gitlab-work",
         "gitlab-personal",
         "github",
@@ -84,7 +84,6 @@ REQUIRED_MCP = {
         "proxmox",
         "ansible",
         "gitlab-official-yandex",
-        "gitlab-official-gmail",
         "gitlab-work",
         "gitlab-personal",
         "opentofu",
@@ -96,12 +95,12 @@ REQUIRED_MCP = {
     "sec": {"ssh", "docker"},
     "ot": {"ssh", "docker", "filesystem", "proxmox"},
     "mgnt": {"docker", "playwright", "postgres", "ssh"},
+    "design": {"chrome-devtools", "playwright", "shadcn", "mermaid", "duckduckgo", "figma"},
 }
 
 # name -> (launcher instance, disabled by default)
 GITLAB_SERVERS = {
     "gitlab-official-yandex": ("yandex", False),
-    "gitlab-official-gmail": ("gmail", False),
     "gitlab-work": ("work", False),
     "gitlab-personal": ("personal", True),
 }
@@ -202,7 +201,7 @@ def test_gitlab_servers_are_configured_for_dev_and_infra():
         assert not {n for n in _cfg(profile)["mcp"]["servers"] if n.startswith("gitlab")}, profile
 
 
-def test_gitlab_vault_launcher_uses_personal_vault():
+def test_gitlab_vault_launcher_uses_central_vault():
     launcher = ROOT / "scripts" / "gitlab-mcp-vault"
     assert launcher.is_file()
     assert launcher.stat().st_mode & 0o111, "gitlab-mcp-vault must be executable"
@@ -211,7 +210,7 @@ def test_gitlab_vault_launcher_uses_personal_vault():
     assert 'use "$secret"' in text
     assert "agent-vault" in text
     assert "--project" in text and "--instance" in text
-    assert "personal" in text
+    assert "central" in text
     assert "gitlab official yandex pat" in text
     assert "gitlab official gmail pat" in text
     assert "gitlab personal pat" in text
@@ -231,7 +230,7 @@ def test_gitlab_docs_cover_all_instances():
     text = (ROOT / "docs" / "profiles-agents-matrix.md").read_text(encoding="utf-8")
     for name in GITLAB_SERVERS:
         assert name in text, name
-    assert "personal" in text
+    assert "central" in text
 
 
 def test_github_mcp_uses_official_server_via_vault():

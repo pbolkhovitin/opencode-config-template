@@ -51,7 +51,7 @@ LM Studio больше не является частью профилей; ло
 git -C ~/.local/share/opencode/opencode-synced/repo pull
 
 # 2. Развернуть все профили
-for p in default dev infra net sec ot mgnt; do
+for p in default dev infra net sec ot mgnt design; do
   bash ~/.local/share/opencode/opencode-synced/repo/scripts/deploy-config.sh "$p"
 done
 
@@ -75,13 +75,14 @@ rm -rf ~/.config/opencode-devops ~/.config/opencode-fullstack ~/.config/opencode
 python3 tests/validate_configs.py config profiles
 python3 -m pytest tests -q
 bash tests/run.sh
-for p in default dev infra net sec ot mgnt; do
+for p in default dev infra net sec ot mgnt design; do
   bash scripts/deploy-config.sh --dry-run "$p"
 done
 ```
 
 Ожидается: все проверки зелёные, каждый профиль разворачивается без ошибок,
-`ocp` показывает ровно семь профилей.
+`ocp` показывает ровно восемь профилей (канонический набор + `design`, добавленный
+2026-11-11 отдельно от миграции).
 
 ## Откат
 

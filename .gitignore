@@ -30,3 +30,4 @@ data/storage/
 data/*.jsonl
 state/prompt-history.jsonl
 state/prompt-stash.jsonl
+state/model.json.bak-*

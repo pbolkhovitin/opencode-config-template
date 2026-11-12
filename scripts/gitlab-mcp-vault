@@ -74,7 +74,7 @@ case "$name" in
 esac
 
 project="${GITLAB_VAULT_PROJECT:-YOUR_PROJECT}"
-instance="${GITLAB_VAULT_INSTANCE:-personal}"
+instance="${GITLAB_VAULT_INSTANCE:-central}"
 export GITLAB_API_URL="$api_url"
 
 agent_vault="${AGENT_VAULT_BIN:-}"

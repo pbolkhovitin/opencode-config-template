@@ -311,14 +311,6 @@
         ],
         "disabled": false
       },
-      "gitlab-official-gmail": {
-        "type": "local",
-        "command": [
-          "gitlab-mcp-vault",
-          "gmail"
-        ],
-        "disabled": false
-      },
       "gitlab-work": {
         "type": "local",
         "command": [

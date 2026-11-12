@@ -173,25 +173,35 @@ opencode_sync pull
 |----------|----------|---------|
 | `GITLAB_WORK_API_URL` | dev, infra | Рабочий GitLab; по умолчанию `https://gitlab.example.com/api/v4`, в локальной сети — `https://gitlab.internal.example.com/api/v4` |
 | `GITLAB_OFFICIAL_YANDEX_API_URL` | dev, infra | GitLab.com, аккаунт Yandex (опционально, по умолчанию `https://gitlab.com/api/v4`) |
-| `GITLAB_OFFICIAL_GMAIL_API_URL` | dev, infra | GitLab.com, аккаунт Gmail (опционально, по умолчанию `https://gitlab.com/api/v4`) |
-| `GITLAB_PERSONAL_API_URL` | dev, infra | Личный GitLab API (опционально, по умолчанию `https://gitlab.com/api/v4`) |
 | `DATABASE_URL` | dev, infra, mgnt | Postgres MCP connection string |
 | `PROXMOX_TOKEN_VALUE` | infra, ot | Proxmox API token |
 | `BRAVE_API_KEY` | dev, ot | brave-search (по умолчанию `disabled: true`) |
 
 Shodan MCP в конфигурации не подключён — `SHODAN_API_KEY` не требуется.
 
-GitLab MCP работает с четырьмя инстансами (`gitlab-work`, `gitlab-official-yandex`,
-`gitlab-official-gmail`, `gitlab-personal`). Токены **не задаются через env** — они лежат в личном Vault
-(`instance personal`, проект `YOUR_PROJECT`) и подставляются лаунчером
+GitLab MCP работает с двумя активными инстансами (`gitlab-work`, `gitlab-official-yandex`) плюс `gitlab-personal` (disabled).
+Токены **не задаются через env** — они лежат в Vault
+(`instance central`, `http://127.0.0.1:8204`, проект `YOUR_PROJECT`) и подставляются лаунчером
 `gitlab-mcp-vault` только в окружение MCP-процесса:
 
 | Сервер | Vault-секрет | Состояние |
 |---|---|---|
-| `gitlab-work` | `gitlab.example.com PAT` | включён |
-| `gitlab-official-yandex` | `gitlab official yandex pat` | включён |
-| `gitlab-official-gmail` | `gitlab official gmail pat` | включён |
-| `gitlab-personal` | `gitlab personal pat` | выключен (личный, позже) |
+| `gitlab-work` | `gitlab.example.com PAT` | включён, API 200 |
+| `gitlab-official-yandex` | `gitlab official yandex pat` | включён, API 200 |
+| `gitlab-personal` | `gitlab personal pat` | `disabled: true` (локальный GitLab в podman, позже) |
+
+Для gitlab.com достаточно одного аккаунта (`yandex`), у которого есть доступ к нужным
+проектам; `gitlab-work` остаётся отдельно для `gitlab.example.com`. Итог — два сервера:
+`gitlab-official-yandex` + `gitlab-work`; `gitlab-personal` зарезервирован под локальный GitLab в podman и выключен.
+
+GitHub MCP (только профиль `dev`) использует `github-mcp-vault`; PAT
+(`github YOUR_ORG pat`) лежит в Vault `central`. Проверка:
+`github-mcp-vault --check` и `github-mcp-vault --check-api` (HTTP 200).
+
+Если в логе `MCP server process exited with code 2 ... 8201 ... connection refused`,
+значит wrapper взял Vault instance `personal` (8201) вместо `central` (8204).
+Проверить: `agent-vault status central`, `ss -ltn | rg 8204`; wrappers должны
+использовать `central` (`GITLAB_VAULT_INSTANCE`/`GITHUB_MCP_INSTANCE`).
 
 Права ограничиваются scope PAT (`api`, либо `read_api` + `read_repository`).
 Проверка наличия токена без его вывода: `gitlab-mcp-vault work --check`;
@@ -278,8 +288,6 @@ oc-mgnt              # mgnt profile
 | github | dev | `github-mcp-vault` | Vault: `github YOUR_ORG pat`, Docker image |
 | gitlab-work | dev, infra | `gitlab-mcp-vault work` | Vault: `gitlab.example.com PAT` |
 | gitlab-official-yandex | dev, infra | `gitlab-mcp-vault yandex` | Vault: `gitlab official yandex pat` |
-| gitlab-official-gmail | dev, infra | `gitlab-mcp-vault gmail` | Vault: `gitlab official gmail pat` |
-| gitlab-personal | dev, infra (off) | `gitlab-mcp-vault personal` | Vault: `gitlab personal pat` |
 | brave-search | dev, ot (off) | `npx @modelcontextprotocol/server-brave-search` | BRAVE_API_KEY |
 
 В `default` MCP нет.

@@ -18,13 +18,13 @@
 set -euo pipefail
 
 CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
-PROFILES=(default dev infra net sec ot mgnt)
+PROFILES=(default dev infra net sec ot mgnt design)
 
 usage() {
   cat <<'EOF'
 usage: ocp [profile] [opencode args...]
 
-profiles: default dev infra net sec ot mgnt
+profiles: default dev infra net sec ot mgnt design
 
   ocp            выбрать профиль в fzf
   ocp infra      запустить в профиле infra

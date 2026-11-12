@@ -1,7 +1,7 @@
 # Матрица «профиль → агенты и MCP»
 
 Кто доступен в каждом профиле и когда его запускать. Переключение — `ocp <profile>`.
-Канонический набор: `default`, `dev`, `infra`, `net`, `sec`, `ot`, `mgnt`.
+Канонический набор: `default`, `dev`, `infra`, `net`, `sec`, `ot`, `mgnt`, `design`.
 
 ## Сводка
 
@@ -14,6 +14,7 @@
 | `sec` | `oc-sec` | `anthropic/claude-sonnet-4-5` | ssh, docker | `ctf-reverse-engineer`, `ctf-pwner`, `ctf-web-hacker`, `pentester`, `appsec-auditor`, `threat-intel` | — | Пентест, CTF, AppSec-аудит, форензика |
 | `ot` | `oc-ot` | `anthropic/claude-sonnet-4-5` | ssh, docker, filesystem, proxmox, playwright, duckduckgo, brave-search (off) | `ot-protocol-analyst`, `ot-incident-responder`, `ot-network-designer` | `ot-recon`, `ot-segmentation-reviewer`, `ot-vuln-researcher` | АСУ ТП/ICS: пассивный аудит, сегментация, разбор pcap, КИИ/ФСТЭК; активные действия — только через `ot-guard` |
 | `mgnt` | `oc-mgnt` | `anthropic/claude-sonnet-4-5` | ssh, postgres, playwright, docker | `prd-writer`, `incident-commander`, `data-analyst` | — | PRD, инциденты, аналитика |
+| `design` | `oc-design` | `anthropic/claude-sonnet-4-5` | chrome-devtools, playwright, shadcn, mermaid, duckduckgo, figma/magic/unsplash (off) | `ui-designer` | `visual-qa` | Сайт и оформление: арт-дирекшн, дизайн-система, вёрстка, скриншот-приёмка, иллюстрации |
 
 ## Агенты по ролям
 
@@ -53,6 +54,12 @@
 
 ### Управление (`mgnt`)
 - `prd-writer`, `incident-commander`, `data-analyst`.
+
+### Дизайн (`design`)
+- `ui-designer` — арт-дирекшн → токены → каркас → реализация → приёмка скриншотами.
+- `visual-qa` (subagent) — визуальная приёмка: адаптивность, контраст, состояния, консоль.
+
+Инструменты и полный каталог (скиллы, плагины, MCP) — [design-toolkit.md](design-toolkit.md).
 
 ## Как вызывать субагентов
 
@@ -127,3 +134,7 @@ export GITLAB_WORK_API_URL="https://gitlab.internal.example.com/api/v4"
 
 `devops`, `fullstack`, `sec-lm` удалены, их содержимое слито в `dev`, `infra`, `sec`.
 Карта переноса — [profiles-migration.md](profiles-migration.md).
+
+## Vault и MCP
+
+GitLab/GitHub MCP используют Vault instance **central** (`http://127.0.0.1:8204`, project `YOUR_PROJECT`), а не `personal` (8201). `gitlab-personal` зарезервирован под локальный GitLab в podman и сейчас `disabled: true`.

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Profiles: default dev infra net sec ot mgnt
+# Profiles: default dev infra net sec ot mgnt design
 # Deploy opencode config from this repo into a (possibly clean) HOME.
 # Usage: deploy-config.sh [--dry-run] <default|dev|infra|net|sec|ot|mgnt>
 # Never calls sudo or the network; safe to run twice.

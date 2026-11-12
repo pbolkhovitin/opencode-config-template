@@ -52,5 +52,34 @@
       ".cache/**",
       ".local/share/opencode/**"
     ]
+  },
+  "provider": {
+    "gigachat": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "GigaChat",
+      "options": {
+        "baseURL": "https://api.giga.chat/v1"
+      },
+      "models": {
+        "GigaChat-3-Ultra": {
+          "name": "GigaChat 3 Ultra"
+        },
+        "GigaChat-3-Pro": {
+          "name": "GigaChat 3 Pro"
+        },
+        "GigaChat-3-Lightning": {
+          "name": "GigaChat 3 Lightning"
+        },
+        "GigaChat-2-Max": {
+          "name": "GigaChat 2 Max"
+        },
+        "GigaChat-2-Pro": {
+          "name": "GigaChat 2 Pro"
+        },
+        "GigaChat-2": {
+          "name": "GigaChat 2"
+        }
+      }
+    }
   }
 }

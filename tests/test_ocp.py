@@ -8,7 +8,7 @@ def test_ocp_script_is_executable_and_knows_profiles():
     assert script.exists()
     assert os.access(script, os.X_OK)
     text = script.read_text()
-    for profile in ("default", "dev", "infra", "net", "sec", "ot", "mgnt"):
+    for profile in ("default", "dev", "infra", "net", "sec", "ot", "mgnt", "design"):
         assert profile in text
     for removed in ("devops", "fullstack", "sec-lm"):
         assert removed not in text
