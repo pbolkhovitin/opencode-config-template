@@ -10,24 +10,24 @@
 - **@visual-qa** (subagent) — read-only визуальная приёмка: адаптивность,
   контраст, состояния, консольные ошибки. Вызывать явно: «делегируй `visual-qa`».
 
-## MCP (включены)
+## MCP
 
-| Сервер | Зачем |
-|---|---|
-| `chrome-devtools` | скриншоты, DOM, контраст, performance, ошибки консоли. Запуск `--isolated`, профиль браузера не трогается |
-| `playwright` (firefox) | сценарии: клик → состояние, регрессия форм и навигации |
-| `shadcn` | поиск/установка компонентов из реестров (`components.json` → `registries`) |
-| `duckduckgo` | референсы, поиск аналогов |
-| `penpot` | собственная инсталляция Penpot 2.18: `http://localhost:9001/mcp/stream` (stdio-прокси нет, только remote). Взаимодействие с макетами — через плагин в открытом файле, сначала `high_level_overview`. Ключ передаётся query-параметром `?userToken={env:PENPOT_MCP_TOKEN}` (значение в Vault: `secret/agent/YOUR_PROJECT/penpot-mcp-key`; `ocp design` подставляет его автоматически). В браузере в плагине нужен **тот же** ключ, иначе `No Penpot instance connected` |
-| `mermaid` | схемы потоков/состояний в документации. Нужен Chromium 1254 из `~/.cache/ms-playwright` (`npx playwright@1.65 install chromium`, **без** `--with-deps`); `npm_config_ignore_scripts=true` отключает падающий postinstall |
+Набор закрывает визуальный контур: скриншоты, DOM и контраст (chrome-devtools,
+`--isolated`), браузерные сценарии (playwright), компоненты shadcn, референсы
+(duckduckgo), схемы (mermaid), макеты (penpot) и генерация ассетов (magic,
+unsplash). Figma подключена, но выключена без токена — как и magic/unsplash.
 
-Выключены по умолчанию (нужен ключ):
+Penpot: собственная инсталляция 2.18, remote MCP `http://localhost:9001/mcp/stream`
+(stdio-прокси нет). Работа с макетами — через плагин в открытом файле, сначала
+`high_level_overview`. Ключ идёт query-параметром `?userToken={env:PENPOT_MCP_TOKEN}`
+(Vault: `secret/agent/YOUR_PROJECT/penpot-mcp-key`; `ocp design` подставляет сам). В браузере
+нужен **тот же** ключ, иначе `No Penpot instance connected`.
 
-| Сервер | Ключ | Включение |
-|---|---|---|
-| `figma` | `FIGMA_API_KEY` (Figma REST token) | токена сейчас нет; при появлении — `disabled: false` |
-| `magic` (21st.dev) | `MAGIC_API_KEY` | 10k+ React/Tailwind компонентов; новый способ — `npx @21st-dev/cli@latest init` |
-| `unsplash` | `UNSPLASH_ACCESS_KEY` | стоковые фото с атрибуцией |
+Mermaid: нужен Chromium 1254 из `~/.cache/ms-playwright`
+(`npx playwright@1.65 install chromium`, **без** `--with-deps`);
+`npm_config_ignore_scripts=true` отключает падающий postinstall.
+
+Точный состав и статус серверов — в [матрице](../../docs/profiles-agents-matrix.md).
 
 Наборы MCP на сессию скрываются командой `/mcp` (плагин `opencode-mcp-sets`).
 

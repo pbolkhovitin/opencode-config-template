@@ -8,13 +8,13 @@
 | Профиль | Алиас | Модель | MCP | Агенты (primary) | Агенты (subagent) | Когда использовать |
 |---|---|---|---|---|---|---|
 | `default` | `oc` | `anthropic/claude-sonnet-4-5` | — | — | — | Общие задачи, текст, планирование, быстрые правки без MCP |
-| `dev` | `oc-dev` | `anthropic/claude-sonnet-4-5` | postgres, docker, playwright, filesystem, github (Vault), gitlab-work, gitlab-official-yandex/gmail (+ personal off), ssh, duckduckgo, brave-search (off) | `feature-planner`, `code-architect`, `senior-python-dev`, `senior-js-ts-dev`, `senior-php-dev`, `senior-cpp-dev`, `senior-java-dev`, `senior-go-dev`, `senior-rust-dev`, `senior-nextjs-dev`, `appsec-auditor`, `security-tool-developer` | `code-reviewer`, `platform-engineer` | Разработка на любом стеке: архитектура → TDD → реализация → ревью |
-| `infra` | `oc-infra` | `anthropic/claude-sonnet-4-5` | proxmox, ansible, opentofu, docker, ssh, postgres, gitlab-work, gitlab-official-yandex/gmail (+ personal off) | `infra-engineer`, `sre`, `mlops-engineer`, `gitops-engineer`, `security-auditor` | `devops-reviewer` | Инфраструктура, IaC, Kubernetes, GitOps, MLOps, эксплуатация и инциденты |
+| `dev` | `oc-dev` | `anthropic/claude-sonnet-4-5` | postgres, docker, playwright, filesystem, brave-search (off), duckduckgo, ssh, github, gitlab-official-yandex, gitlab-work, gitlab-personal (off) | `feature-planner`, `code-architect`, `senior-python-dev`, `senior-js-ts-dev`, `senior-php-dev`, `senior-cpp-dev`, `senior-java-dev`, `senior-go-dev`, `senior-rust-dev`, `senior-nextjs-dev`, `appsec-auditor`, `security-tool-developer` | `code-reviewer`, `platform-engineer` | Разработка на любом стеке: архитектура → TDD → реализация → ревью |
+| `infra` | `oc-infra` | `anthropic/claude-sonnet-4-5` | proxmox, ansible, opentofu, docker, ssh, postgres, gitlab-official-yandex, gitlab-work, gitlab-personal (off) | `infra-engineer`, `sre`, `mlops-engineer`, `gitops-engineer`, `security-auditor` | `devops-reviewer` | Инфраструктура, IaC, Kubernetes, GitOps, MLOps, эксплуатация и инциденты |
 | `net` | `oc-net` | `anthropic/claude-sonnet-4-5` | ssh, docker, filesystem, duckduckgo | `network-engineer`, `network-security`, `bgp-ospf-analyst` | `packet-analyst` | Сети: VLAN, маршрутизация, firewall, VPN, RouterOS/OpenWrt/pfSense, pcap |
 | `sec` | `oc-sec` | `anthropic/claude-sonnet-4-5` | ssh, docker | `ctf-reverse-engineer`, `ctf-pwner`, `ctf-web-hacker`, `pentester`, `appsec-auditor`, `threat-intel` | — | Пентест, CTF, AppSec-аудит, форензика |
 | `ot` | `oc-ot` | `anthropic/claude-sonnet-4-5` | ssh, docker, filesystem, proxmox, playwright, duckduckgo, brave-search (off) | `ot-protocol-analyst`, `ot-incident-responder`, `ot-network-designer` | `ot-recon`, `ot-segmentation-reviewer`, `ot-vuln-researcher` | АСУ ТП/ICS: пассивный аудит, сегментация, разбор pcap, КИИ/ФСТЭК; активные действия — только через `ot-guard` |
 | `mgnt` | `oc-mgnt` | `anthropic/claude-sonnet-4-5` | ssh, postgres, playwright, docker | `prd-writer`, `incident-commander`, `data-analyst` | — | PRD, инциденты, аналитика |
-| `design` | `oc-design` | `anthropic/claude-sonnet-4-5` | chrome-devtools, playwright, shadcn, mermaid, duckduckgo, figma/magic/unsplash (off) | `ui-designer` | `visual-qa` | Сайт и оформление: арт-дирекшн, дизайн-система, вёрстка, скриншот-приёмка, иллюстрации |
+| `design` | `oc-design` | `anthropic/claude-sonnet-4-5` | chrome-devtools, playwright, penpot, shadcn, mermaid, duckduckgo, figma (off), magic (off), unsplash (off) | `ui-designer` | `visual-qa` | Сайт и оформление: арт-дирекшн, дизайн-система, вёрстка, скриншот-приёмка, иллюстрации |
 
 ## Агенты по ролям
 
@@ -97,13 +97,12 @@
 
 ### GitLab MCP (dev, infra)
 
-Четыре инстанса, все токены — в личном Vault (`instance personal`, проект `YOUR_PROJECT`):
+Три инстанса, все токены — в Vault (`instance central`, проект `YOUR_PROJECT`):
 
 | MCP-сервер | URL по умолчанию | Секрет Vault | Состояние |
 |---|---|---|---|
 | `gitlab-work` | `https://gitlab.example.com/api/v4` | `gitlab.example.com PAT` | включён |
 | `gitlab-official-yandex` | `https://gitlab.com/api/v4` | `gitlab official yandex pat` | включён |
-| `gitlab-official-gmail` | `https://gitlab.com/api/v4` | `gitlab official gmail pat` | включён |
 | `gitlab-personal` | `https://gitlab.com/api/v4` | `gitlab personal pat` | выключен (личный, позже) |
 
 Запуск — через `scripts/gitlab-mcp-vault` (ставится в `~/.local/bin`), токен
@@ -125,9 +124,8 @@ HTTP 200; 401 — токен отозван/просрочен).
 export GITLAB_WORK_API_URL="https://gitlab.internal.example.com/api/v4"
 ```
 
-Для официальных API URL переопределяются через
-`GITLAB_OFFICIAL_YANDEX_API_URL` / `GITLAB_OFFICIAL_GMAIL_API_URL`, для личного —
-`GITLAB_PERSONAL_API_URL`. Полный доступ к API
+Для официальных API URL переопределяется через
+`GITLAB_OFFICIAL_YANDEX_API_URL`, для личного — `GITLAB_PERSONAL_API_URL`. Полный доступ к API
 ограничивается scope PAT; read-only можно включить отдельно.
 
 ## История изменений набора профилей

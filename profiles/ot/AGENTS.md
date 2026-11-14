@@ -19,7 +19,9 @@ scripts/ot-guard.sh active  --target 10.10.0.5 --scope ./scope.yaml
 
 ## MCP
 
-ssh, docker, filesystem, proxmox (лабораторные VM), playwright (веб SCADA/HMI), duckduckgo, brave-search (выключен).
+MCP покрывают SSH/Docker/файлы, лабораторные VM в Proxmox, браузер для веб-SCADA/HMI
+и поиск. Точный состав и статус серверов — в
+[матрице](../../docs/profiles-agents-matrix.md).
 
 Секреты — только `{env:...}`; значения хранятся в окружении или Vault.
 

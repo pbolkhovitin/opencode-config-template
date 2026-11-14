@@ -11,13 +11,10 @@
 `docs/profiles-agents-matrix.md` в репозитории конфигурации.
 
 ## MCP по профилям
-- **dev** — docker, duckduckgo, filesystem, github, gitlab×4, playwright, postgres, ssh, brave-search (off)
-- **infra** — ansible, docker, gitlab×4, opentofu, postgres, proxmox, ssh
-- **net** — docker, duckduckgo, filesystem, ssh
-- **sec** — docker, ssh
-- **ot** — docker, duckduckgo, filesystem, playwright, proxmox, ssh, brave-search (off)
-- **mgnt** — docker, playwright, postgres, ssh
-- **default** — MCP отсутствует (только встроенные инструменты)
+
+`default` — MCP отсутствует (только встроенные инструменты). В именных профилях
+состав и статус серверов — в [матрице](../docs/profiles-agents-matrix.md);
+MCP-колонка генерируется из `profiles/*/opencode.jsonc`.
 
 Секреты MCP — только `{env:...}`; значения хранятся в окружении или Vault.
 

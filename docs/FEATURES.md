@@ -30,29 +30,29 @@ Permissions: bash=ask, edit=ask.
 ### dev (`oc-dev`) — Мультиязычная разработка
 14 агентов (dev + fullstack): `@feature-planner`, `@code-architect`, `@senior-{python,js-ts,php,cpp,java,go,rust,nextjs}-dev`,
 `@appsec-auditor`, `@security-tool-developer`, `@code-reviewer`, `@platform-engineer`.
-12 языковых инструкций. MCP: postgres, docker, playwright, filesystem, github (Vault + Docker), gitlab-work, gitlab-official-yandex/gmail (+ personal off), ssh, duckduckgo, brave-search (off).
+12 языковых инструкций. MCP: см. [матрицу](profiles-agents-matrix.md).
 
 ### infra (`oc-infra`) — Инфраструктура и эксплуатация
 6 агентов: `@infra-engineer`, `@sre`, `@mlops-engineer`, `@gitops-engineer`,
 `@security-auditor`, `@devops-reviewer`.
-Все изменения — через dry-run / --check. MCP: proxmox, ansible, opentofu, docker, ssh, postgres, gitlab-work, gitlab-official-yandex/gmail (+ personal off).
+Все изменения — через dry-run / --check. MCP: см. [матрицу](profiles-agents-matrix.md).
 
 ### net (`oc-net`) — Сети
 4 агента: `@network-engineer`, `@network-security`, `@bgp-ospf-analyst`, `@packet-analyst`.
-MCP: ssh, docker, filesystem, duckduckgo. Оборудование: MikroTik, pfSense, OpenWrt, UniFi, D-Link, TP-Link, Dahua, Trassir.
+MCP: см. [матрицу](profiles-agents-matrix.md). Оборудование: MikroTik, pfSense, OpenWrt, UniFi, D-Link, TP-Link, Dahua, Trassir.
 
 ### sec (`oc-sec`) — Безопасность
 6 агентов: `@ctf-reverse-engineer`, `@ctf-pwner`, `@ctf-web-hacker`, `@pentester`,
 `@appsec-auditor`, `@threat-intel`. Destructive операции — с подтверждением (bash/edit/write=ask).
-MCP: ssh, docker.
+MCP: см. [матрицу](profiles-agents-matrix.md).
 
 ### ot (`oc-ot`) — АСУ ТП / ICS
 6 агентов: 3 primary + 3 subagent. Активные действия — только через `scripts/ot-guard.sh`.
-MCP: ssh, docker, filesystem, proxmox, playwright, duckduckgo, brave-search (off).
+MCP: см. [матрицу](profiles-agents-matrix.md).
 
 ### mgnt (`oc-mgnt`) — Management
 3 агента: `@prd-writer`, `@incident-commander`, `@data-analyst`.
-MCP: ssh, postgres (read-only), playwright, docker.
+MCP: см. [матрицу](profiles-agents-matrix.md).
 
 ---
 

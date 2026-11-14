@@ -99,7 +99,7 @@ opencode_sync pull
 
 | Аспект | Детали |
 |--------|--------|
-| MCP | postgres, docker, playwright, filesystem, github, gitlab-work, gitlab-official-yandex/gmail (+ personal off), ssh, duckduckgo, brave-search (off) |
+| MCP | см. [матрицу](profiles-agents-matrix.md) |
 | Агенты | feature-planner, code-architect, senior-{python,js-ts,php,cpp,java,go,rust,nextjs}, appsec-auditor, security-tool-developer, code-reviewer, platform-engineer |
 | Default agent | build |
 | Инструкции | 12 модульных файлов по языкам/доменам |
@@ -109,7 +109,7 @@ opencode_sync pull
 
 | Аспект | Детали |
 |--------|--------|
-| MCP | proxmox, ansible, opentofu, docker, ssh, postgres |
+| MCP | см. [матрицу](profiles-agents-matrix.md) |
 | Агенты | infra-engineer, sre, mlops-engineer, gitops-engineer, security-auditor, devops-reviewer |
 | Default agent | infra-engineer |
 | Правило | перед любыми изменениями — dry-run / --check |
@@ -119,7 +119,7 @@ opencode_sync pull
 
 | Аспект | Детали |
 |--------|--------|
-| MCP | ssh, docker, filesystem, duckduckgo |
+| MCP | см. [матрицу](profiles-agents-matrix.md) |
 | Агенты | network-engineer, network-security, bgp-ospf-analyst, packet-analyst |
 | Default agent | network-engineer |
 | Правило | read-only first; изменения — только после backup и подтверждения |
@@ -129,7 +129,7 @@ opencode_sync pull
 
 | Аспект | Детали |
 |--------|--------|
-| MCP | ssh, docker |
+| MCP | см. [матрицу](profiles-agents-matrix.md) |
 | Агенты | ctf-reverse-engineer, ctf-pwner, ctf-web-hacker, pentester, appsec-auditor, threat-intel |
 | Default agent | pentester |
 | Назначение | CTF, pentest, forensics, reverse engineering |
@@ -138,7 +138,7 @@ opencode_sync pull
 
 | Аспект | Детали |
 |--------|--------|
-| MCP | ssh, docker, filesystem, proxmox, playwright, duckduckgo, brave-search (off) |
+| MCP | см. [матрицу](profiles-agents-matrix.md) |
 | Агенты | ot-protocol-analyst, ot-incident-responder, ot-network-designer, ot-recon, ot-segmentation-reviewer, ot-vuln-researcher |
 | Default agent | ot-protocol-analyst |
 | Правило | активные действия — только через `scripts/ot-guard.sh` |
@@ -148,7 +148,7 @@ opencode_sync pull
 
 | Аспект | Детали |
 |--------|--------|
-| MCP | ssh, postgres, playwright, docker |
+| MCP | см. [матрицу](profiles-agents-matrix.md) |
 | Агенты | prd-writer, incident-commander, data-analyst |
 | Default agent | prd-writer |
 | Назначение | PRD, инциденты, аналитика |

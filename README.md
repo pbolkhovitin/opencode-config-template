@@ -23,17 +23,9 @@ default-профиль без MCP, семь именных профилей, и�
 ## Профили и MCP
 
 `default` (алиас `oc`) — базовый набор инструментов, MCP-серверы **не подключены**.
-MCP живут в именных профилях:
-
-| Профиль | Алиас | MCP |
-|---|---|---|
-| dev | `oc-dev` | docker, duckduckgo, filesystem, github, gitlab×4, playwright, postgres, ssh, brave-search (off) |
-| infra | `oc-infra` | ansible, docker, gitlab×4, opentofu, postgres, proxmox, ssh |
-| net | `oc-net` | docker, duckduckgo, filesystem, ssh |
-| sec | `oc-sec` | docker, ssh |
-| ot | `oc-ot` | docker, duckduckgo, filesystem, playwright, proxmox, ssh, brave-search (off) |
-| mgnt | `oc-mgnt` | docker, playwright, postgres, ssh |
-| design | `oc-design` | chrome-devtools, playwright, penpot, shadcn, mermaid, duckduckgo, figma, magic, unsplash |
+MCP живут в именных профилях. Состав, алиасы и роли — в
+[docs/profiles-agents-matrix.md](docs/profiles-agents-matrix.md). MCP-колонка там
+генерируется из `profiles/*/opencode.jsonc` скриптом `scripts/gen-mcp-matrix.py`.
 
 Алиасы профилей запускают `opencode --standalone --continue`: в v2 конфигурацией
 владеет фоновый сервис, и без `--standalone` выбранный профиль не применяется.
