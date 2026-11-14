@@ -114,12 +114,12 @@ MCP: см. [матрицу](profiles-agents-matrix.md); инструменты �
 | opencode-gemini-auth | OAuth для Google/Gemini | default, dev, infra, net, mgnt |
 | opencode-tui-usage | TUI-sidebar: cache, context, токены, стоимость, скорость | все (cli.json) |
 | @opencode-cockpit/status | Нижняя строка TUI: git.diff, todo, diagnostics, статус сессии | все (cli.json) |
-| profile-badge (local) | Бейдж `профиль · агент · MCP N/M` в футере | все (plugins/) |
+| profile-badge (local) | Бейдж `профиль·агент·N/M` (MCP connected/active) в футере | все (plugins/) |
 
-**TUI (`cli.json`):** `opencode-tui-usage` (sidebar снизу, без Tools/Skills),
-`@opencode-cockpit/status` (нижняя строка), локальный `profile-badge`
-(`config/plugins/profile-badge/tui.tsx`), `debug.turn_tokens`, `diffs.source: turn`,
-`diffs.tree`, `session.grouping`, `prompt.editor`, `terminal.title`,
+**TUI (`cli.json`):** `opencode-tui-usage` (sidebar снизу, без Tools/Skills/Context —
+Context рисует нативная секция v2.3.0), `@opencode-cockpit/status` (нижняя строка),
+локальный `profile-badge` (`config/plugins/profile-badge/tui.tsx`), `debug.turn_tokens`,
+`diffs.source: turn`, `diffs.tree`, `session.grouping`, `prompt.editor`, `terminal.title`,
 `scroll.acceleration`, `attention.volume: 0.4`; keybinds `<leader>v/d/h/p/o`.
 Квоты — `usage-monitor.json` v2 (DeepSeek) во всех профилях.
 

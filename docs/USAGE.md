@@ -10,6 +10,10 @@ Multi-profile конфигурация для opencode CLI. Каждый про�
 Синхронизация с GitHub — через opencode-synced (автоматический push локальных изменений
 в репозиторий `YOUR_ORG/my-opencode-config`).
 
+Пошаговые сценарии — новый проект, подключение уже начатого, перенос на другую
+машину, передача людям — см. [usage-scenarios.md](usage-scenarios.md). Этот файл
+остаётся справочником по установке, профилям и возможностям.
+
 ---
 
 ## Installation
@@ -349,8 +353,11 @@ oc-mgnt              # mgnt profile
 Настройки TUI — глобальный `~/.config/opencode/cli.json` (синхронизируется через
 `extraConfigPaths`). Он не зависит от профиля: профиль меняет агента и MCP, но не TUI.
 
-- **Sidebar**: `opencode-tui-usage` — Cache, Context, Usage, Model, Speed, Agents;
-  панель снизу, без рамки и без оценочного context breakdown.
+- **Sidebar**: `opencode-tui-usage` — Cache, Session, Model, Speed, Agents;
+  панель снизу, без рамки и без оценочного context breakdown. Секция `Context`
+  у плагина отключена (`display.sections.context: false`): Context рисует нативная
+  секция v2.3.0, чтобы не было дубля. `Usage` (баланс провайдера) и
+  `Usage (v2.6.0)` (токены/стоимость сессии) — разные данные.
 - **Нижняя строка**: `@opencode-cockpit/status` — `git.diff`, `todo`, `diagnostics`,
   статус сессии; diagnostics показывает нездоровые MCP/LSP.
 - **Бейдж профиля**: локальный плагин `config/plugins/profile-badge/tui.tsx` —

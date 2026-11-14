@@ -100,6 +100,7 @@ python3 -m pytest tests -q                          # гигиена, мигра
 - [docs/profiles-migration.md](docs/profiles-migration.md) — карта профилей
 - [docs/profiles-agents-matrix.md](docs/profiles-agents-matrix.md) — кто доступен в каждом профиле
 - [docs/context-management.md](docs/context-management.md) — compaction, DCP, references и ledger
+- [docs/usage-scenarios.md](docs/usage-scenarios.md) — сценарии: новый проект, подключение существующего, перенос, передача
 - [docs/skill-management.md](docs/skill-management.md) — управление скиллами
 - [docs/USAGE.md](docs/USAGE.md) — подробное руководство
 

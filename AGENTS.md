@@ -78,3 +78,4 @@ python3 -m pytest tests -q                          # гигиена, мигра
 - [docs/config-migration.md](docs/config-migration.md) — почему часть ключей осталась v1
 - [docs/skill-management.md](docs/skill-management.md) — управление скиллами
 - [docs/context-management.md](docs/context-management.md) — контекст и DCP
+- [docs/usage-scenarios.md](docs/usage-scenarios.md) — сценарии: новый проект, подключение существующего, перенос, передача

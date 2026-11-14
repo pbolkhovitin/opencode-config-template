@@ -24,7 +24,7 @@ export default Plugin.define({
     const profile = profileName(configPath, process.env.OPENCODE_CONFIG_DIR)
     const fallbackAgent = readDefaultAgent(configPath)
 
-    const [mcpLabel, setMcpLabel] = createSignal("MCP —")
+    const [mcpLabel, setMcpLabel] = createSignal("—")
 
     let refreshing = false
 
@@ -40,7 +40,7 @@ export default Plugin.define({
 
       const servers = context.data.location.mcp.server.list()
       if (servers === undefined) {
-        setMcpLabel("MCP —")
+        setMcpLabel("—")
         return
       }
 
@@ -54,7 +54,7 @@ export default Plugin.define({
 
       const active = servers.filter((server) => statusOf(server) !== "disabled")
       const connected = active.filter((server) => statusOf(server) === "connected").length
-      setMcpLabel(`MCP ${connected}/${active.length}`)
+      setMcpLabel(`${connected}/${active.length}`)
     }
 
     await refreshMcp()
@@ -77,7 +77,7 @@ export default Plugin.define({
         return (
           <box flexShrink={0}>
             <text fg={context.theme.text.base}>
-              {`${profile} · ${activeAgent ?? fallbackAgent} · ${mcpLabel()}`}
+              {`${profile}·${activeAgent ?? fallbackAgent}·${mcpLabel()}`}
             </text>
           </box>
         )
