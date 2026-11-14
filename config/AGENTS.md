@@ -82,7 +82,7 @@ At task start read `context/INDEX.md`, then `context/current.md`; update `curren
 
 ## Docs
 
-Пути указаны относительно корня репозитория `my-opencode-config`
+Пути указаны относительно корня репозитория `opencode-config-template`
 (в runtime-каталоге `~/.config/opencode/` их нет):
 
 - `docs/profiles-agents-matrix.md` — матрица профилей и агентов

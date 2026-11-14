@@ -1,4 +1,4 @@
-# my-opencode-config
+# opencode-config-template
 
 Репозиторий конфигурации OpenCode v2: default-профиль, семь именных профилей, общие
 инструкции, скиллы и установщики. Платформа: Linux (native или WSL).
