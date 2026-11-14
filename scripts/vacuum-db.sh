@@ -23,7 +23,12 @@ fi
 [[ -f "$DB" ]] || { echo "error: database not found: $DB" >&2; exit 1; }
 command -v sqlite3 >/dev/null || { echo "error: sqlite3 not installed" >&2; exit 1; }
 
-before=$(stat -c%s "$DB")
+file_size() {
+  # GNU stat (Linux) and BSD stat (macOS)
+  stat -f%z "$1" 2>/dev/null || stat -c%s "$1"
+}
+
+before=$(file_size "$DB")
 freelist=$(sqlite3 "$DB" 'PRAGMA freelist_count;')
 pages=$(sqlite3 "$DB" 'PRAGMA page_count;')
 echo "db=$DB size=$((before/1024/1024))MiB pages=$pages freelist=$freelist"
@@ -39,5 +44,5 @@ sqlite3 "$DB" ".backup '$backup'"
 
 echo "integrity: $(sqlite3 "$DB" 'PRAGMA integrity_check;')"
 sqlite3 "$DB" 'VACUUM;'
-after=$(stat -c%s "$DB")
+after=$(file_size "$DB")
 echo "done: $((before/1024/1024))MiB -> $((after/1024/1024))MiB, freelist=$(sqlite3 "$DB" 'PRAGMA freelist_count;')"

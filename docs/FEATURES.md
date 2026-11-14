@@ -2,13 +2,14 @@
 
 ## Платформа
 
-Конфигурация работает на **Linux** (native или WSL).
+Конфигурация работает на **Linux** (native или WSL) и **macOS** (Apple Silicon и Intel).
 
 | Платформа | Установщик | Shell |
 |-----------|-----------|-------|
 | 🐧 Linux | `bash setup.sh` | bash/zsh |
 | 🪟🐧 WSL (CLI) | `bash setup.sh` (автоопределение WSL 1/2) | zsh или bash |
 | 🖥️ WSL + Desktop | OpenCode Desktop → Add WSL server | GUI в Windows, сервер в WSL |
+| 🍎 macOS (arm64/x64) | `bash setup.sh` (Darwin, brew) | zsh (по умолчанию) или bash |
 
 Установка:
 ```bash
@@ -19,6 +20,11 @@ cd opencode-config-template && bash setup.sh
 > **Windows-native** — `setup.ps1` (PowerShell 7+). Для GUI рекомендуется
 > OpenCode Desktop на Windows с WSL-сервером: инструменты и секреты остаются в
 > Linux, интерфейс — в Windows. См. [wsl-desktop.md](wsl-desktop.md).
+>
+> **macOS** — Apple Silicon: Xcode CLT + Homebrew, затем `bash setup.sh`.
+> Linux-only пакеты пропускаются, OpenTofu ставится из brew, kubectl — под
+> darwin/arm64. Desktop: `brew install --cask opencode-desktop`.
+> См. [macos.md](macos.md).
 
 ---
 

@@ -95,6 +95,18 @@ bash setup.sh               # разложить конфиги и алиасы
 source ~/.zshrc             # или ~/.bashrc
 ```
 
+macOS (Apple Silicon): поставьте Xcode CLT и Homebrew, затем тот же скрипт:
+
+```bash
+xcode-select --install
+brew install git gh jq fzf ripgrep
+bash setup.sh
+```
+
+`setup.sh` сам определяет `Darwin`/`arm64`, ставит кроссплатформенные пакеты,
+OpenTofu из brew и `kubectl` под darwin/arm64. Подробности —
+[macos.md](macos.md).
+
 Если конфиг уже синхронизирован через opencode-synced:
 
 ```bash

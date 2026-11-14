@@ -141,7 +141,7 @@
           "@modelcontextprotocol/server-filesystem"
         ],
         "environment": {
-          "ALLOWED_DIRECTORIES": "/home/YOURUSER"
+          "ALLOWED_DIRECTORIES": "{env:HOME}"
         },
         "disabled": false
       },

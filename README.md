@@ -3,7 +3,7 @@
 [![validate](https://github.com/YOUR_ORG/opencode-config-template/actions/workflows/validate.yml/badge.svg)](https://github.com/YOUR_ORG/opencode-config-template/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![OpenCode v2](https://img.shields.io/badge/OpenCode-v2-blue)](https://opencode.ai)
-[![Platforms](https://img.shields.io/badge/platforms-Linux%20%7C%20WSL%20%7C%20Windows-lightgrey)](#установка)
+[![Platforms](https://img.shields.io/badge/platforms-Linux%20%7C%20WSL%20%7C%20macOS%20%7C%20Windows-lightgrey)](#установка)
 
 Обезличенный шаблон конфигурации **OpenCode v2**: default-профиль без MCP, семь
 именных профилей, инструкции для агентов, ~100 скиллов, локальные плагины,
@@ -19,6 +19,7 @@
 - [Что внутри](#что-внутри)
 - [Профили и MCP](#профили-и-mcp)
 - [Установка](#установка)
+- [macOS (Apple Silicon)](#macos-apple-silicon)
 - [WSL и OpenCode Desktop](#wsl-и-opencode-desktop)
 - [Проверка](#проверка)
 - [Документация](#документация)
@@ -97,7 +98,7 @@
 | Скиллы | `config/skills/` | ~100 скиллов, канонический источник |
 | Плагины | `config/plugins/` | локальные: `profile-badge`, `opencode-mcp-sets`, `folder-switcher` |
 | Команды | `config/command/` | `/grill-me` и профильные команды |
-| Установка | `setup.sh`, `setup.ps1` | Linux/WSL и Windows native |
+| Установка | `setup.sh`, `setup.ps1` | Linux/WSL, macOS и Windows native |
 | Проверки | `tests/` | схема, гигиена, миграции, ссылки, матрица |
 
 ## Профили и MCP
@@ -132,8 +133,11 @@ ocp default    # лёгкий профиль без MCP
 git clone https://github.com/YOUR_ORG/opencode-config-template.git
 cd opencode-config-template
 bash setup.sh --dry-run     # посмотреть план
-bash setup.sh               # Linux/WSL, интерактивно
+bash setup.sh               # Linux/WSL/macOS, интерактивно
 ```
+
+macOS (Apple Silicon): `xcode-select --install`, Homebrew, затем `bash setup.sh`
+— подробности в [docs/macos.md](docs/macos.md).
 
 Windows native: `.\setup.ps1` (рекомендуется WSL2).
 
@@ -149,7 +153,22 @@ Windows native: `.\setup.ps1` (рекомендуется WSL2).
 | OpenCode v2 | да | `setup.sh` ставит через `opencode.ai/v2/install` |
 | Node.js | нет | нужен только части MCP-серверов и плагинов |
 | WSL 2 | для Desktop | WSL 1 не поддерживается Desktop-приложением |
+| Xcode CLT + Homebrew | для macOS | `setup.sh` ставит пакеты через brew |
 | Docker / podman | для части MCP | Docker, GitLab/GitHub MCP, security tooling |
+
+## macOS (Apple Silicon)
+
+```bash
+xcode-select --install
+brew install git gh jq fzf ripgrep
+bash setup.sh
+```
+
+`setup.sh` определяет `Darwin`/`arm64`, ставит кроссплатформенные пакеты,
+OpenTofu из brew и `kubectl` под `darwin/arm64`; Linux-only пакеты пропускаются.
+Desktop: `brew install --cask opencode-desktop`. Профили — `ocp`; для Desktop
+используйте проектный `opencode.jsonc`. Подробности и диагностика —
+[docs/macos.md](docs/macos.md).
 
 ## WSL и OpenCode Desktop
 
@@ -186,6 +205,7 @@ python3 -m pytest tests -q                          # гигиена, ссылк
 - [docs/multi-profile-projects.md](docs/multi-profile-projects.md) — один проект на нескольких профилях
 - [docs/context-management.md](docs/context-management.md) — компакция, DCP, ledger
 - [docs/mcp-sets.md](docs/mcp-sets.md) — `/mcp off|only|reset`
+- [docs/macos.md](docs/macos.md) — macOS (Apple Silicon): установка, профили, Desktop
 - [docs/wsl-desktop.md](docs/wsl-desktop.md) — WSL 2 и Desktop
 - [docs/skill-management.md](docs/skill-management.md) — управление скиллами
 - [docs/profiles-migration.md](docs/profiles-migration.md) — карта профилей

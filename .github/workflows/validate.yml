@@ -26,6 +26,18 @@ jobs:
       - run: python3 tests/validate_configs.py config profiles
       - run: python3 -m pytest tests -q
 
+  macos:
+    runs-on: macos-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install jsonschema pytest
+      - run: python3 tests/validate_configs.py config profiles
+      - run: python3 -m pytest tests -q
+
   secrets:
     runs-on: ubuntu-latest
     timeout-minutes: 10

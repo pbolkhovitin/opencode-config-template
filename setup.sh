@@ -64,22 +64,22 @@ fi
 mkdir -p "$LOCAL_BIN"
 
 if [[ -f "$REPO_DIR/scripts/ocp" ]]; then
-    install -m755 "$REPO_DIR/scripts/ocp" "$LOCAL_BIN/ocp"
+    install -m 755 "$REPO_DIR/scripts/ocp" "$LOCAL_BIN/ocp"
     ok "ocp installed to $LOCAL_BIN"
 fi
 
 if [[ -f "$REPO_DIR/scripts/oc-project-init.py" ]]; then
-    install -m755 "$REPO_DIR/scripts/oc-project-init.py" "$LOCAL_BIN/oc-project-init.py"
+    install -m 755 "$REPO_DIR/scripts/oc-project-init.py" "$LOCAL_BIN/oc-project-init.py"
     ok "oc-project-init installed to $LOCAL_BIN"
 fi
 
 if [[ -f "$REPO_DIR/scripts/gitlab-mcp-vault" ]]; then
-    install -m755 "$REPO_DIR/scripts/gitlab-mcp-vault" "$LOCAL_BIN/gitlab-mcp-vault"
+    install -m 755 "$REPO_DIR/scripts/gitlab-mcp-vault" "$LOCAL_BIN/gitlab-mcp-vault"
     ok "gitlab-mcp-vault installed to $LOCAL_BIN"
 fi
 
 if [[ -f "$REPO_DIR/scripts/github-mcp-vault" ]]; then
-    install -m755 "$REPO_DIR/scripts/github-mcp-vault" "$LOCAL_BIN/github-mcp-vault"
+    install -m 755 "$REPO_DIR/scripts/github-mcp-vault" "$LOCAL_BIN/github-mcp-vault"
     ok "github-mcp-vault installed to $LOCAL_BIN"
 fi
 
@@ -118,6 +118,42 @@ if grep -qi microsoft /proc/version 2>/dev/null; then
     else
         IS_WSL1=true
         echo -e "${YELLOW}[WSL]${NC}  WSL 1 detected — Desktop требует WSL 2: wsl --set-version <distro> 2"
+    fi
+fi
+
+# ---------- Platform / CPU architecture ----------
+IS_MACOS=false
+IS_LINUX=false
+case "$(uname -s)" in
+    Darwin) IS_MACOS=true ;;
+    Linux)  IS_LINUX=true ;;
+esac
+ARCH_RAW="$(uname -m)"
+case "$ARCH_RAW" in
+    arm64|aarch64) ARCH_GO="arm64" ;;
+    x86_64|amd64)  ARCH_GO="amd64" ;;
+    *)             ARCH_GO="$ARCH_RAW" ;;
+esac
+
+if [ "$IS_MACOS" = true ]; then
+    MACOS_VER="$(sw_vers -productVersion 2>/dev/null || echo unknown)"
+    echo -e "${BLUE}[macOS]${NC}  ${MACOS_VER} / ${ARCH_RAW}"
+    if [ "$(sysctl -in sysctl.proc_translated 2>/dev/null || true)" = "1" ]; then
+        warn "Terminal запущен под Rosetta. Для M-series используйте arm64-сборки и Homebrew из /opt/homebrew."
+    fi
+    # Homebrew на Apple Silicon может быть не в PATH у неинтерактивного shell.
+    if ! command -v brew >/dev/null 2>&1 && [ -x /opt/homebrew/bin/brew ]; then
+        export PATH="/opt/homebrew/bin:$PATH"
+    fi
+    if command -v xcode-select >/dev/null 2>&1 && xcode-select -p >/dev/null 2>&1; then
+        ok "Xcode Command Line Tools present"
+    else
+        warn "Xcode Command Line Tools не найдены: xcode-select --install"
+    fi
+    if command -v brew >/dev/null 2>&1; then
+        ok "Homebrew $(brew --version | head -1 | awk '{print $2}')"
+    else
+        warn "Homebrew не найден — системные пакеты будут пропущены: https://brew.sh"
     fi
 fi
 
@@ -309,37 +345,49 @@ info "Package manager: $PM"
 # --- 8a. System packages (dnf/apt/brew) ---
 # Source: default + infra AGENTS.md ("Системные утилиты") + sec AGENTS.md ("Системные утилиты")
 # + user's CTF install command
-SYSTEM_PACKAGES=(
-    # === Network scanning & recon ===
-    nmap nmap-ncat masscan arp-scan hping3 gobuster
-    # === Password auditing ===
-    john hashcat hydra
-    # === Reverse engineering & debugging ===
-    gdb radare2 rizin
-    # === Forensics & data recovery ===
-    binwalk foremost steghide sleuthkit testdisk
-    # === Network analysis / diagnostics ===
-    wireshark tshark socat tcpdump mtr iperf3 ethtool lldpd nethogs iftop
-    # === DNS / WHOIS ===
-    bind-utils whois
-    # === Anonymity & spoofing ===
-    tor proxychains-ng macchanger
-    # === Wireless ===
-    aircrack-ng
-    # === Sandbox / cleanup ===
-    firejail bleachbit
-    # === Dev / scripting ===
-    jq
-    # === CTF build toolchain ===
-    ruby golang
-)
+if [ "$IS_MACOS" = true ]; then
+    # macOS (Apple Silicon): только кроссплатформенные инструменты из brew.
+    # Linux-only пакеты (firejail, bind-utils, nmap-ncat, ...) не устанавливаем;
+    # полный security toolchain — в контейнере/VM, см. docs/macos.md.
+    SYSTEM_PACKAGES=(
+        # === Base / dev ===
+        jq fzf ripgrep fd go ruby
+        # === Network / diagnostics ===
+        nmap masscan socat mtr iperf3
+    )
+else
+    SYSTEM_PACKAGES=(
+        # === Network scanning & recon ===
+        nmap nmap-ncat masscan arp-scan hping3 gobuster
+        # === Password auditing ===
+        john hashcat hydra
+        # === Reverse engineering & debugging ===
+        gdb radare2 rizin
+        # === Forensics & data recovery ===
+        binwalk foremost steghide sleuthkit testdisk
+        # === Network analysis / diagnostics ===
+        wireshark tshark socat tcpdump mtr iperf3 ethtool lldpd nethogs iftop
+        # === DNS / WHOIS ===
+        bind-utils whois
+        # === Anonymity & spoofing ===
+        tor proxychains-ng macchanger
+        # === Wireless ===
+        aircrack-ng
+        # === Sandbox / cleanup ===
+        firejail bleachbit
+        # === Dev / scripting ===
+        jq
+        # === CTF build toolchain ===
+        ruby golang
+    )
+fi
 
 info "Installing system packages (${#SYSTEM_PACKAGES[@]} total)..."
 pm_install "${SYSTEM_PACKAGES[@]}" && ok "System packages installed" || warn "Some system packages failed (see /tmp/setup-install.log)"
 
 # --- 8a2. v1 notify deps (only for legacy v1 profiles) ---
 # opencode-notify retired; deps нужны только если остался v1-контур. Для v2 не требуются.
-if [ "$IS_WSL" = false ] && [ -d "$HOME/.config/opencode/opencode-notify.json" ]; then
+if [ "$IS_MACOS" = false ] && [ "$IS_WSL" = false ] && [ -d "$HOME/.config/opencode/opencode-notify.json" ]; then
     info "Installing opencode-notify deps (legacy v1): xdotool wmctrl libdbus-1-dev..."
     pm_install xdotool wmctrl libdbus-1-dev && ok "opencode-notify deps installed" || \
         warn "Failed to install opencode-notify deps — focus detection / focusAfterAction won't work"
@@ -372,11 +420,15 @@ if command -v pip3 >/dev/null 2>&1; then
         # === Configuration management ===
         ansible ansible-mcp
     )
+    PIP_FAILED=0
     for pkg in "${PIP_PACKAGES[@]}"; do
         python3 -c "import importlib.metadata; importlib.metadata.version('$pkg')" 2>/dev/null && \
             info "  $pkg already installed" || \
-            { pip3 install --user "$pkg" 2>/dev/null && ok "  $pkg installed" || warn "  $pkg install failed"; }
+            { pip3 install --user "$pkg" 2>/dev/null && ok "  $pkg installed" || { warn "  $pkg install failed"; PIP_FAILED=1; }; }
     done
+    if [ "$PIP_FAILED" = 1 ] && [ "$IS_MACOS" = true ]; then
+        info "macOS: если pip3 --user заблокирован (PEP 668), используйте 'uv tool install <pkg>' или pipx."
+    fi
     ok "Python packages installed"
 else
     warn "pip3 not found — Python packages skipped"
@@ -400,18 +452,29 @@ fi
 # --- 8d. OpenTofu (binary) ---
 # Source: infra AGENTS.md ("IaC")
 if ! command -v tofu >/dev/null 2>&1; then
-    info "Installing OpenTofu..."
-    ARCH=$(uname -m); [ "$ARCH" = "x86_64" ] && ARCH="amd64"
-    TMPD=$(mktemp -d)
-    TOFU_URL="https://github.com/opentofu/opentofu/releases/latest/download/tofu_${ARCH}.zip"
-    if curl -fsSL "$TOFU_URL" -o "${TMPD}/tofu.zip" 2>/dev/null; then
-        unzip -qo "${TMPD}/tofu.zip" -d "$TMPD" 2>/dev/null
-        install -m755 "${TMPD}/tofu" "$LOCAL_BIN/tofu"
-        rm -rf "${TMPD}"
-        ok "OpenTofu $(tofu --version | head -1) installed"
+    if [ "$IS_MACOS" = true ] && command -v brew >/dev/null 2>&1; then
+        info "Installing OpenTofu via Homebrew..."
+        if brew install opentofu 2>>/tmp/setup-install.log; then
+            ok "OpenTofu $(tofu --version | head -1) installed"
+        else
+            warn "OpenTofu install failed (infra profile)"
+        fi
     else
-        rm -rf "${TMPD}"
-        warn "OpenTofu download failed (infra profile)"
+        info "Installing OpenTofu..."
+        TOFU_VER=$(curl -fsSL https://api.github.com/repos/opentofu/opentofu/releases/latest 2>/dev/null \
+            | sed -n 's/.*"tag_name": *"v\([^"]*\)".*/\1/p' | head -1)
+        TOFU_OS="linux"; [ "$IS_MACOS" = true ] && TOFU_OS="darwin"
+        TMPD=$(mktemp -d)
+        TOFU_URL="https://github.com/opentofu/opentofu/releases/download/v${TOFU_VER}/tofu_${TOFU_VER}_${TOFU_OS}_${ARCH_GO}.zip"
+        if [ -n "$TOFU_VER" ] && curl -fsSL "$TOFU_URL" -o "${TMPD}/tofu.zip" 2>/dev/null; then
+            unzip -qo "${TMPD}/tofu.zip" -d "$TMPD" 2>/dev/null
+            install -m 755 "${TMPD}/tofu" "$LOCAL_BIN/tofu"
+            rm -rf "${TMPD}"
+            ok "OpenTofu $(tofu --version | head -1) installed"
+        else
+            rm -rf "${TMPD}"
+            warn "OpenTofu download failed (infra profile)"
+        fi
     fi
 else
     ok "OpenTofu already installed: $(tofu --version | head -1)"
@@ -421,9 +484,9 @@ fi
 # Source: infra AGENTS.md (kubernetes MCP)
 if ! command -v kubectl >/dev/null 2>&1; then
     info "Installing kubectl (binary fallback)..."
-    ARCH=$(uname -m); [ "$ARCH" = "x86_64" ] && ARCH="amd64"
+    KUBE_OS="linux"; [ "$IS_MACOS" = true ] && KUBE_OS="darwin"
     KUBE_VER=$(curl -fsSL https://dl.k8s.io/release/stable.txt 2>/dev/null || echo "v1.32.0")
-    curl -fsSL "https://dl.k8s.io/release/${KUBE_VER}/bin/linux/${ARCH}/kubectl" -o "$LOCAL_BIN/kubectl" && \
+    curl -fsSL "https://dl.k8s.io/release/${KUBE_VER}/bin/${KUBE_OS}/${ARCH_GO}/kubectl" -o "$LOCAL_BIN/kubectl" && \
         chmod +x "$LOCAL_BIN/kubectl" && ok "kubectl installed" || warn "kubectl binary download failed"
 fi
 
@@ -480,6 +543,33 @@ fi
 export SUDO_ASKPASS="$HOME/.local/bin/opencode-askpass"
 
 ok "CLI tools installed"
+
+# ---------- macOS-specific setup ----------
+if [ "$IS_MACOS" = true ]; then
+    step "9/12 — macOS-specific configuration"
+
+    if command -v docker >/dev/null 2>&1; then
+        if docker info >/dev/null 2>&1; then
+            ok "Docker работает"
+        else
+            warn "Docker установлен, но не запущен: откройте Docker Desktop или выполните 'colima start'"
+        fi
+    else
+        warn "Docker не найден: Docker Desktop (brew install --cask docker) или 'brew install colima docker'"
+    fi
+
+    if [ -d "/Applications/OpenCode.app" ] || [ -d "$HOME/Applications/OpenCode.app" ]; then
+        ok "OpenCode Desktop найден"
+    else
+        info "Desktop: brew install --cask opencode-desktop (Apple Silicon)"
+    fi
+
+    if command -v ssh-add >/dev/null 2>&1; then
+        info "SSH-ключи в keychain: ssh-add --apple-use-keychain ~/.ssh/id_ed25519"
+    fi
+
+    ok "macOS configuration complete"
+fi
 
 # ---------- WSL-specific setup ----------
 if [ "$IS_WSL" = true ]; then

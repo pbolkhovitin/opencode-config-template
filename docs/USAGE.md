@@ -5,7 +5,7 @@
 Multi-profile конфигурация для opencode CLI. Каждый профиль — изолированный набор MCP
 инструментов, плагинов, кастомных агентов, скиллов и разрешений под конкретную задачу.
 
-**Платформа**: Linux (native или WSL). Windows native — через `setup.ps1` (рекомендуется WSL2).
+**Платформа**: Linux (native или WSL), macOS (Apple Silicon/Intel). Windows native — через `setup.ps1` (рекомендуется WSL2).
 
 Синхронизация с GitHub — через opencode-synced (автоматический push локальных изменений
 в репозиторий `YOUR_ORG/opencode-config-template`).
@@ -20,7 +20,7 @@ Multi-profile конфигурация для opencode CLI. Каждый про�
 
 ### Требования
 - Git, curl
-- **Node.js >= 18** (необходим для opencode CLI и всех npx-инструментов)
+- **Node.js >= 18** — опционально: нужен части MCP-серверов, плагинов и `npx` (OpenCode v2 работает без Node)
 - Python 3, pip3
 - `gh` (GitHub CLI) — аутентифицирован
 
@@ -49,6 +49,24 @@ curl -fsSL -H "Authorization: token $(gh auth token)" \
 # Способ 3 — из уже склонированного репозитория
 cd /path/to/opencode-config-template && bash setup.sh
 ```
+
+### macOS (Apple Silicon)
+
+```bash
+xcode-select --install
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew install git gh jq fzf ripgrep
+gh auth login
+gh repo clone YOUR_ORG/opencode-config-template ~/opencode-config-template
+cd ~/opencode-config-template
+bash setup.sh --dry-run
+bash setup.sh
+```
+
+`setup.sh` определяет `Darwin`/`arm64`, ставит кроссплатформенные пакеты,
+OpenTofu через brew и `kubectl` для `darwin/arm64`; Linux-only пакеты
+пропускаются. Desktop ставится отдельно: `brew install --cask opencode-desktop`.
+Подробности, ограничения и диагностика — [macos.md](macos.md).
 
 После установки:
 ```bash
