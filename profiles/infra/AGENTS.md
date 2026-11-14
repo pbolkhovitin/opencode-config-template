@@ -88,7 +88,7 @@ docker_container_logs id=app-backend tail=100
 
 ## Docs
 
-Пути относительно корня репозитория `my-opencode-config`:
+Пути относительно корня репозитория `opencode-config-template`:
 
 - `docs/infra/README.md` — сценарии инфраструктуры
 - `docs/profiles-agents-matrix.md` — матрица профилей

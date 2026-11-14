@@ -8,7 +8,7 @@ Multi-profile конфигурация для opencode CLI. Каждый про�
 **Платформа**: Linux (native или WSL). Windows native — через `setup.ps1` (рекомендуется WSL2).
 
 Синхронизация с GitHub — через opencode-synced (автоматический push локальных изменений
-в репозиторий `YOUR_ORG/my-opencode-config`).
+в репозиторий `YOUR_ORG/opencode-config-template`).
 
 Пошаговые сценарии — новый проект, подключение уже начатого, перенос на другую
 машину, передача людям — см. [usage-scenarios.md](usage-scenarios.md). Этот файл
@@ -39,15 +39,15 @@ nvm install 22
 ### Linux / WSL
 ```bash
 # Способ 1 — через clone
-gh repo clone YOUR_ORG/my-opencode-config ~/.local/share/opencode/opencode-synced/repo
+gh repo clone YOUR_ORG/opencode-config-template ~/.local/share/opencode/opencode-synced/repo
 bash ~/.local/share/opencode/opencode-synced/repo/setup.sh
 
 # Способ 2 — curl с токеном
 curl -fsSL -H "Authorization: token $(gh auth token)" \
-  https://raw.githubusercontent.com/YOUR_ORG/my-opencode-config/main/setup.sh | bash
+  https://raw.githubusercontent.com/YOUR_ORG/opencode-config-template/main/setup.sh | bash
 
 # Способ 3 — из уже склонированного репозитория
-cd /path/to/my-opencode-config && bash setup.sh
+cd /path/to/opencode-config-template && bash setup.sh
 ```
 
 После установки:

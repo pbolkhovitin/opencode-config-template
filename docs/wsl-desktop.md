@@ -57,8 +57,8 @@ wsl --set-version Ubuntu 2
 5. В WSL установите конфигурацию:
 
    ```bash
-   gh repo clone YOUR_ORG/my-opencode-config
-   cd my-opencode-config
+   gh repo clone YOUR_ORG/opencode-config-template
+   cd opencode-config-template
    bash setup.sh
    source ~/.zshrc    # или ~/.bashrc
    ```
@@ -69,8 +69,8 @@ wsl --set-version Ubuntu 2
 ### 2.2. Сначала CLI, потом Desktop
 
 ```bash
-gh repo clone YOUR_ORG/my-opencode-config
-cd my-opencode-config
+gh repo clone YOUR_ORG/opencode-config-template
+cd opencode-config-template
 bash setup.sh
 opencode --version      # должно быть 2.x
 ```

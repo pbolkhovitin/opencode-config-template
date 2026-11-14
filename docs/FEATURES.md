@@ -12,8 +12,8 @@
 
 Установка:
 ```bash
-gh repo clone YOUR_ORG/my-opencode-config
-cd my-opencode-config && bash setup.sh
+gh repo clone YOUR_ORG/opencode-config-template
+cd opencode-config-template && bash setup.sh
 ```
 
 > **Windows-native** — `setup.ps1` (PowerShell 7+). Для GUI рекомендуется

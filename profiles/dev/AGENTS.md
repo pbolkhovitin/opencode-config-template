@@ -71,7 +71,7 @@ Scripting: Bash. Низкий уровень: ASM, embedded, firmware. Инфр�
 
 ## Docs
 
-Пути относительно корня репозитория `my-opencode-config`:
+Пути относительно корня репозитория `opencode-config-template`:
 
 - `docs/dev/README.md` — сценарии разработки
 - `docs/dev/GOVERNANCE.md` — governance языковых инструкций

@@ -21,7 +21,7 @@ param([switch]$DryRun)
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
-$RepoUrl    = 'https://github.com/YOUR_ORG/my-opencode-config.git'
+$RepoUrl    = 'https://github.com/YOUR_ORG/opencode-config-template.git'
 $DataDir    = Join-Path $env:LOCALAPPDATA 'opencode'
 $RepoDir    = Join-Path $DataDir 'opencode-synced\repo'
 $ConfigDir  = Join-Path $env:APPDATA 'opencode'

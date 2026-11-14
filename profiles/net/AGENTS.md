@@ -53,7 +53,7 @@ Dahua · Trassir · FRR/BIRD · nftables/iptables · WireGuard/IPsec/OpenVPN
 
 ## Docs
 
-Пути относительно корня репозитория `my-opencode-config`:
+Пути относительно корня репозитория `opencode-config-template`:
 
 - `docs/net/README.md` — сценарии сетевого профиля
 - `docs/profiles-agents-matrix.md` — матрица профилей

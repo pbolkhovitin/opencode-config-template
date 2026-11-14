@@ -9,9 +9,9 @@ set -euo pipefail
 #           and all required CLI tools (pip, dnf/apt/brew, binary).
 #
 # Usage:
-#   gh repo clone YOUR_ORG/my-opencode-config && cd my-opencode-config && bash setup.sh
+#   gh repo clone YOUR_ORG/opencode-config-template && cd opencode-config-template && bash setup.sh
 #   # or with gh auth token:
-#   curl -fsSL -H "Authorization: token \$(gh auth token)" https://raw.githubusercontent.com/YOUR_ORG/my-opencode-config/main/setup.sh | bash
+#   curl -fsSL -H "Authorization: token \$(gh auth token)" https://raw.githubusercontent.com/YOUR_ORG/opencode-config-template/main/setup.sh | bash
 #   # or locally (after clone):
 #   bash setup.sh
 #
@@ -19,7 +19,7 @@ set -euo pipefail
 # Install Node.js (optional): curl -fsSL https://deb.nodesource.com/setup_22.x | sudo bash && sudo apt install -y nodejs
 # ==============================================================
 
-REPO_URL="https://github.com/YOUR_ORG/my-opencode-config.git"
+REPO_URL="https://github.com/YOUR_ORG/opencode-config-template.git"
 REPO_BRANCH="main"
 REPO_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/opencode/opencode-synced/repo"
 OPENCODE_BIN="${HOME}/.opencode/bin/opencode"
@@ -162,7 +162,7 @@ done
 
 # ---------- Clone / update config repo ----------
 step "3/12 — Cloning config repository"
-AUTH_URL="https://YOUR_ORG:$(gh auth token)@github.com/YOUR_ORG/my-opencode-config.git"
+AUTH_URL="https://YOUR_ORG:$(gh auth token)@github.com/YOUR_ORG/opencode-config-template.git"
 if [ -d "$REPO_DIR/.git" ]; then
     info "Repository exists, updating..."
     git -C "$REPO_DIR" remote set-url origin "$AUTH_URL"

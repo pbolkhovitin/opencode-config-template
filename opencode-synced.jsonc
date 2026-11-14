@@ -1,7 +1,7 @@
 {
   "repo": {
     "owner": "YOUR_ORG",
-    "name": "my-opencode-config"
+    "name": "opencode-config-template"
   },
   "includeSecrets": false,
   "includeMcpSecrets": false,

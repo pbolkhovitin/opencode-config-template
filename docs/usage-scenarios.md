@@ -88,8 +88,8 @@ opencode mcp list          # MCP профиля + проекта
 # приватный репозиторий: нужен авторизованный gh
 gh auth status
 
-gh repo clone YOUR_ORG/my-opencode-config
-cd my-opencode-config
+gh repo clone YOUR_ORG/opencode-config-template
+cd opencode-config-template
 bash setup.sh --dry-run     # посмотреть план
 bash setup.sh               # разложить конфиги и алиасы
 source ~/.zshrc             # или ~/.bashrc
@@ -401,8 +401,8 @@ opencode reload
 
 ```bash
 # 1. конфигурация
-gh repo clone YOUR_ORG/my-opencode-config
-cd my-opencode-config && bash setup.sh
+gh repo clone YOUR_ORG/opencode-config-template
+cd opencode-config-template && bash setup.sh
 source ~/.zshrc
 
 # 2. синхронизация runtime-конфига
