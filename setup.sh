@@ -210,6 +210,13 @@ if [ ! -f "$OPENCODE_CONFIG/opencode-synced.jsonc" ]; then
 fi
 cp "$REPO_DIR/opencode-synced.jsonc" "$OPENCODE_CONFIG/opencode-synced.jsonc" 2>/dev/null || true
 [ -d "$REPO_DIR/config/command" ] && cp -r "$REPO_DIR/config/command" "$OPENCODE_CONFIG/" && ok "  command/ copied to default"
+# supermemory создаёт файлы команд в обоих каталогах (v1: command/, v2: commands/)
+if [ -d "$REPO_DIR/config/commands" ]; then
+    mkdir -p "$OPENCODE_CONFIG/commands" "$OPENCODE_CONFIG/command"
+    cp -r "$REPO_DIR/config/commands/." "$OPENCODE_CONFIG/commands/"
+    cp -r "$REPO_DIR/config/commands/." "$OPENCODE_CONFIG/command/"
+    ok "  commands/ copied to default"
+fi
 ok "Default profile configured"
 
 # ---------- Install default plugins ----------

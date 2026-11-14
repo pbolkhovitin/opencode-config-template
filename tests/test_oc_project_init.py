@@ -54,6 +54,29 @@ def test_generates_union_with_later_profile_winning(tmp_path: Path) -> None:
     assert "conflict server 'docker'" in result.stderr
 
 
+def test_agent_prompt_paths_are_absolute(tmp_path: Path) -> None:
+    home = tmp_path / "home"
+    write_profile(
+        home,
+        "dev",
+        {
+            "agent": {
+                "reviewer": {
+                    "prompt": "{file:./prompts/personas/reviewer.md}",
+                    "plain": "./prompts/reviewer.md",
+                }
+            }
+        },
+    )
+    project = tmp_path / "project"
+    assert run("--profiles", "dev", "--config-home", str(home), "--dir", str(project)).returncode == 0
+
+    agent = load_jsonc(project / "opencode.jsonc")["agent"]["reviewer"]
+    base = (home / "opencode-dev").resolve()
+    assert agent["prompt"] == f"{{file:{base / 'prompts/personas/reviewer.md'}}}"
+    assert agent["plain"] == str(base / "prompts/reviewer.md")
+
+
 def test_check_detects_drift(tmp_path: Path) -> None:
     home = profiles_home(tmp_path)
     project = tmp_path / "project"

@@ -2,8 +2,10 @@
 """Generate a project OpenCode config from one or more profiles.
 
 Profiles are additive only for MCP servers and agents: the project config is
-merged on top of the profile chosen via ``ocp <profile>``. Model, permissions
-and tools still come from that base profile.
+merged on top of the profile chosen via ``ocp <profile>``. Model and permissions
+still default to that base profile, but the project file may override them.
+Agent prompt paths are rewritten to absolute paths so they resolve from any
+project directory.
 
     oc-project-init.py --profiles dev,infra
     oc-project-init.py --profiles dev,infra --check
@@ -86,19 +88,45 @@ def resolve_profile(profile: str, home: Path) -> Path:
     raise SystemExit(f"config for profile '{profile}' not found (looked in {candidates[0].parent})")
 
 
+def absolutize_agent(value, base: Path):
+    """Resolve relative prompt references against the profile they came from.
+
+    Profile agents use paths like ``./prompts/feature-planner.md`` and
+    ``{file:./prompts/personas/code-reviewer.md}``. A project config lives in a
+    different directory, so the paths must be absolute or the prompts silently
+    fail to load.
+    """
+    if isinstance(value, dict):
+        return {key: absolutize_agent(item, base) for key, item in value.items()}
+    if isinstance(value, list):
+        return [absolutize_agent(item, base) for item in value]
+    if isinstance(value, str):
+        match = re.fullmatch(r"\{file:(.+)\}", value)
+        if match:
+            target = Path(match.group(1)).expanduser()
+            if not target.is_absolute():
+                target = (base / target).resolve()
+            return f"{{file:{target}}}"
+        if value.startswith(("./", "../")):
+            return str((base / value).resolve())
+    return value
+
+
 def collect(profiles: list[str], home: Path) -> tuple[dict, dict, list[str], dict[str, str]]:
     servers: dict[str, dict] = {}
     agents: dict[str, dict] = {}
     owner = {"mcp": {}, "agent": {}}
     conflicts: list[str] = []
     for profile in profiles:
-        config = load_jsonc(resolve_profile(profile, home))
+        config_path = resolve_profile(profile, home)
+        config = load_jsonc(config_path)
         for name, server in ((config.get("mcp") or {}).get("servers") or {}).items():
             if name in servers and servers[name] != server:
                 conflicts.append(f"server '{name}': {owner['mcp'][name]} -> {profile}")
             servers[name] = server
             owner["mcp"][name] = profile
         for name, agent in (config.get("agent") or {}).items():
+            agent = absolutize_agent(agent, config_path.parent)
             if name in agents and agents[name] != agent:
                 conflicts.append(f"agent '{name}': {owner['agent'][name]} -> {profile}")
             agents[name] = agent
@@ -116,7 +144,7 @@ def render(profiles: list[str], servers: dict, agents: dict) -> str:
     first, rest = body.split("\n", 1)
     header = [
         f"  // {MARKER} from: {', '.join(profiles)}",
-        "  // Model, permissions and tools come from the base profile (ocp <profile>).",
+        "  // Model and permissions default to the base profile; add them here to override.",
         f"  // Regenerate: oc-project-init.py --profiles {','.join(profiles)}",
     ]
     return "\n".join([first, *header, rest]) + "\n"

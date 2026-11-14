@@ -71,7 +71,8 @@ Leader по умолчанию — `ctrl+x` (см. `ctrl+x d` в палитре 
 - Бейдж компактный (`профиль·агент·N/M`) намеренно: на v2.3.0 футер узкий и делит
   ширину с `supermemory`; формат с пробелами и словом `MCP` переносился на две строки.
 - Нативный status bay v2.3.0 (`N MCP /mcps`, `1 plugin failed /plugins`) — не cockpit.
-  `1 plugin failed` — дубль `supermemory`, к TUI не относится.
+  `1 plugin failed` — дубль `supermemory` (v1-ключ `plugin` + `plugins`), исправлено
+  2026-11-14: одна регистрация, badge должен показывать `0 plugin failed`.
 - Нативные секции sidebar v2.3.0 (`Context`, `MCP`, `Usage`) и блок
   `opencode-tui-usage` (`Cache`, `Session`, `Speed`, `Model`). Дубль Context убран:
   у плагина `display.sections.context: false`, Context рисует нативная секция.
