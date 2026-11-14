@@ -1,0 +1,50 @@
+name: Feature request
+description: Предложение по шаблону: профиль, агент, скилл, установщик, документация
+title: "[feature] "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Какую задачу решает
+      description: Опишите проблему, а не только готовое решение
+      placeholder: При работе с ... приходится вручную ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Предлагаемое решение
+      description: Что добавить или изменить
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Альтернативы
+      description: Что уже пробовали и почему не подошло
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Область
+      options:
+        - Профиль или агент
+        - Скилл
+        - Скрипт установки
+        - Документация
+        - CI и тесты
+        - Другое
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Проверки
+      options:
+        - label: Предложение не содержит личных данных, секретов и внутренних адресов
+          required: true
+        - label: Я проверил, что похожего предложения ещё нет
+          required: true

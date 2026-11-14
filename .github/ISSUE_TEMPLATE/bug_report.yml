@@ -1,0 +1,68 @@
+name: Bug report
+description: Что-то не работает: установка, профиль, скрипт, документация
+title: "[bug] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Спасибо за отчёт. Не прикладывайте токены, пароли, внутренние адреса
+        и содержимое `.env`. Для уязвимостей используйте SECURITY.md.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: Что произошло
+      description: Ожидаемое и фактическое поведение
+      placeholder: Запустил `bash setup.sh`, на шаге ... получил ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Как воспроизвести
+      description: Минимальные шаги и команды
+      placeholder: |
+        1. git clone ...
+        2. bash setup.sh
+        3. ...
+    validations:
+      required: true
+
+  - type: input
+    id: opencode-version
+    attributes:
+      label: Версия OpenCode
+      placeholder: "2.3.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Платформа
+      options:
+        - Linux (native)
+        - WSL 2
+        - Windows native
+        - macOS
+        - Другое
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Логи и вывод
+      description: Удалите секреты и личные пути перед публикацией
+      render: shell
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Проверки
+      options:
+        - label: Я поискал похожие issues
+          required: true
+        - label: Я удалил секреты и персональные данные из отчёта
+          required: true

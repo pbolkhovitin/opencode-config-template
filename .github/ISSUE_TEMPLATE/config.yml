@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Документация и сценарии
+    url: https://github.com/YOUR_ORG/opencode-config-template/blob/main/docs/usage-scenarios.md
+    about: Установка, новый проект, перенос, профили и секреты
+  - name: Вопросы по OpenCode
+    url: https://opencode.ai/docs
+    about: Поведение самого OpenCode, а не этого шаблона
+  - name: Сообщить об уязвимости
+    url: https://github.com/YOUR_ORG/opencode-config-template/security/advisories/new
+    about: Приватный отчёт; не открывайте публичный issue
