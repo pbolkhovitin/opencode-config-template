@@ -19,7 +19,7 @@ cd my-opencode-config && bash setup.sh
 
 ---
 
-## 7 профилей opencode
+## 8 профилей opencode
 
 Все профили: `model` и `small_model` = `anthropic/claude-sonnet-4-5`.
 
@@ -53,6 +53,10 @@ MCP: см. [матрицу](profiles-agents-matrix.md).
 ### mgnt (`oc-mgnt`) — Management
 3 агента: `@prd-writer`, `@incident-commander`, `@data-analyst`.
 MCP: см. [матрицу](profiles-agents-matrix.md).
+
+### design (`oc-design`) — UI/UX и визуальная приёмка
+2 агента: `@ui-designer` (primary), `@visual-qa` (subagent).
+MCP: см. [матрицу](profiles-agents-matrix.md); инструменты и сценарии — [design-toolkit.md](design-toolkit.md).
 
 ---
 

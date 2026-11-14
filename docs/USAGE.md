@@ -82,7 +82,7 @@ opencode_sync pull
 
 ## Profiles
 
-Канонический набор: `default`, `dev`, `infra`, `net`, `sec`, `ot`, `mgnt`.
+Канонический набор: `default`, `dev`, `infra`, `net`, `sec`, `ot`, `mgnt`, `design`.
 Все профили работают на `anthropic/claude-sonnet-4-5` (main и small).
 
 ### 1. default (`oc`) — Базовый
@@ -152,6 +152,16 @@ opencode_sync pull
 | Агенты | prd-writer, incident-commander, data-analyst |
 | Default agent | prd-writer |
 | Назначение | PRD, инциденты, аналитика |
+
+### 8. design (`oc-design`) — UI/UX
+
+| Аспект | Детали |
+|--------|--------|
+| MCP | см. [матрицу](profiles-agents-matrix.md) |
+| Агенты | ui-designer, visual-qa |
+| Default agent | ui-designer |
+| Правило | визуальная приёмка — только `@visual-qa`, read-only |
+| Назначение | арт-дирекшн, дизайн-система, вёрстка, скриншот-приёмка |
 
 ---
 
@@ -341,6 +351,9 @@ oc-mgnt              # mgnt profile
 
 После изменения `cli.json` или серверных плагинов перезапусти TUI и, при необходимости,
 `opencode service restart`.
+
+Ручная проверка всех пунктов — `docs/tui-smoke-test.md` (чек-лист по профилям,
+диагностика и откат).
 
 ---
 

@@ -92,6 +92,13 @@
 | `@incident-commander` | primary | Триаж, локализация, post-mortem |
 | `@data-analyst` | primary | SQL, метрики, дашборды, read-only БД |
 
+### design — 2 агента
+
+| Агент | Тип | Что делает |
+|-------|-----|------------|
+| `@ui-designer` | primary | Арт-дирекшн, дизайн-система, вёрстка |
+| `@visual-qa` | subagent | Скриншот-приёмка, адаптивность, контраст, ошибки консоли (read-only) |
+
 ---
 
 ## Swarm subagent'ы — история (v1-only)

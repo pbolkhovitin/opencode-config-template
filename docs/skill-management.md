@@ -58,6 +58,7 @@
 | `sec` | 46 | `agent-vault`, `analyzing-network-traffic-with-wireshark`, `ctf-crypto`, `ctf-forensics`, `ctf-malware`, `ctf-osint`, `ctf-pwn`, `ctf-reverse`, `ctf-web`, `exploit-dev-expert`, `find-skills`, `jwt-security`, `log-analysis`, `malware-analyst`, `memory-forensics-volatility`, `mode-exploit`, `mode-pentest`, `penetration-testing`, `pentest-expert`, `python-cybersecurity-tool-development`, `reverse-engineer`, `security-audit`, `security-docker`, `security-secrets`, `smtp-penetration-testing`, `sqlmap-database-pentesting`, `steganography-techniques`, `threat-intel`, `traffic-analysis-pcap`, `web-security-expert`, `wireshark-analysis` |
 | `ot` | 20 | `analyzing-network-traffic-with-wireshark`, `security-audit`, `traffic-analysis-pcap`, `wireshark-analysis`, `ot-network-audit` (набор намеренно узкий: least privilege) |
 | `mgnt` | 21 | `agent-vault`, `brainstorming`, `breakdown-epic-pm`, `find-skills`, `requesting-code-review`, `to-prd` |
+| `design` | 27 | `accessibility-a11y`, `agent-vault`, `brainstorming`, `design-toolkit`, `find-skills`, `finishing-a-development-branch`, `kpi-dashboard-design`, `nextjs-react-typescript`, `requesting-code-review`, `test-driven-development`, `web-scraping`, `webapp-testing` |
 
 Точный список — в `permission.skill` соответствующего `opencode.jsonc`;
 это единственный источник истины.

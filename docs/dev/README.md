@@ -37,7 +37,7 @@
 - **filesystem** — работа с файлами
 - **github** — PR, issues, review (официальный сервер через `github-mcp-vault`, PAT из Vault, Docker)
 - **gitlab-work** — рабочий GitLab: merge requests, issues, pipelines, wiki (Vault, `gitlab.example.com PAT`)
-- **gitlab-official-yandex** / **gitlab-official-gmail** — официальные аккаунты GitLab.com, включены
+- **gitlab-official-yandex** — официальный аккаунт GitLab.com, включён
 - **gitlab-personal** — личный GitLab, выключен до добавления токена
 - **duckduckgo** — бесплатный поиск
 - **brave-search** — отключён, нужен `BRAVE_API_KEY`

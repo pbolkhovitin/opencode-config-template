@@ -32,6 +32,7 @@
 | `sec` | 46 | CTF (`ctf-web`, `ctf-pwn`, `ctf-reverse`, `ctf-crypto`, `ctf-forensics`, `ctf-osint`, `ctf-malware`), pentest (`pentest-expert`, `penetration-testing`, `mode-pentest`, `sqlmap-database-pentesting`, `smtp-penetration-testing`, `web-security-expert`), exploit/RE (`exploit-dev-expert`, `mode-exploit`, `reverse-engineer`), malware/forensics (`malware-analyst`, `memory-forensics-volatility`, `steganography-techniques`), threat intel, pcap |
 | `ot` | 20 | `analyzing-network-traffic-with-wireshark`, `traffic-analysis-pcap`, `wireshark-analysis`, `ot-network-audit` + `security-audit`; набор намеренно узкий (least privilege для АСУ ТП) |
 | `mgnt` | 21 | `to-prd`, `breakdown-epic-pm`, `brainstorming`, `requesting-code-review` |
+| `design` | 27 | вёрстка и a11y (`accessibility-a11y`, `nextjs-react-typescript`, `webapp-testing`), дизайн (`design-toolkit`, `kpi-dashboard-design`), поиск и ревью (`find-skills`, `requesting-code-review`, `finishing-a-development-branch`, `test-driven-development`), `brainstorming`, `web-scraping`, `agent-vault` |
 
 Точный список — в `permission.skill` соответствующего `opencode.jsonc`.
 

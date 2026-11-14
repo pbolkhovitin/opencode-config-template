@@ -22,7 +22,7 @@
 | **ssh** | Remote exec, persistent sessions, port forward, file sync |
 | **postgres** | Admin: health, replication, locks, bloat, sequence |
 | **gitlab-work** | Рабочий GitLab (MR, issues, pipelines, wiki, releases); токен из Vault |
-| **gitlab-official-yandex** / **gitlab-official-gmail** | Официальные аккаунты GitLab.com — включены |
+| **gitlab-official-yandex** | Официальный аккаунт GitLab.com — включён |
 | **gitlab-personal** | Личный GitLab — выключен до добавления токена |
 
 ## Сценарии
