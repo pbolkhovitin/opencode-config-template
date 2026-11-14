@@ -10,6 +10,6 @@ Run this command to log out and clear Supermemory credentials:
 bunx opencode-supermemory@latest logout
 ```
 
-This will remove the saved credentials from ~/.supermemory-opencode/credentials.json.
+This will revoke the saved OAuth refresh token and remove the saved credentials from ~/.supermemory-opencode/credentials.json.
 
 Inform the user whether logout succeeded and that they'll need to run /supermemory-login to re-authenticate.

@@ -75,6 +75,19 @@ fi
 
 export OPENCODE_CONFIG="$config"
 
+# Профиль design: без PENPOT_MCP_TOKEN MCP-сервер Penpot отвечает
+# «No userToken found in session context» и инструменты недоступны.
+# Ключ берём из Vault (secret/agent/YOUR_PROJECT/penpot-mcp-key) и держим только
+# в env дочернего процесса — на диск, в argv и в вывод он не попадает.
+if [[ $choice == design ]] && [[ -z ${PENPOT_MCP_TOKEN:-} ]] && command -v agent-vault >/dev/null 2>&1; then
+  if tok=$(agent-vault use 'penpot-mcp-key' --project YOUR_PROJECT -- 'printf %s "$VAULT_PASSWORD"' 2>/dev/null) && [[ -n $tok ]]; then
+    export PENPOT_MCP_TOKEN="$tok"
+  else
+    printf 'ocp: Penpot MCP key недоступен в Vault (agent-vault status central / login central)\n' >&2
+  fi
+  unset tok
+fi
+
 # Продолжаем последнюю сессию проекта, если пользователь не выбрал сессию сам.
 resume=(--continue)
 for arg in "$@"; do

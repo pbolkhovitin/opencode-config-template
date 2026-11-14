@@ -11,9 +11,11 @@ bunx opencode-supermemory@latest login
 ```
 
 This will:
-1. Start a local server on port 19877
-2. Open the browser to Supermemory's authentication page
-3. After the user logs in, save credentials to ~/.supermemory-opencode/credentials.json
+1. Start a local callback server on 127.0.0.1:19880
+2. Open the browser to Supermemory's OAuth consent page
+3. After the user approves, save OAuth credentials to ~/.supermemory-opencode/credentials.json
+
+OpenCode picks up the new credentials without a restart.
 
 Wait for the command to complete, then inform the user whether authentication succeeded or failed.
 

@@ -102,6 +102,11 @@
         ],
         "disabled": false
       },
+      "penpot": {
+        "type": "remote",
+        "url": "http://localhost:9001/mcp/stream?userToken={env:PENPOT_MCP_TOKEN}",
+        "disabled": false
+      },
       "shadcn": {
         "type": "local",
         "command": [

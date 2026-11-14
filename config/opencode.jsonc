@@ -4,11 +4,10 @@
   "plugins": [
     "opencode-supermemory"
   ],
-  "permissions": [
-    {
-      "action": "supermemory_recall",
-      "resource": "*",
-      "effect": "allow"
-    }
-  ]
+  "plugin": [
+    "opencode-supermemory@latest"
+  ],
+  "permission": {
+    "supermemory_recall": "allow"
+  }
 }

@@ -18,6 +18,7 @@
 | `playwright` (firefox) | сценарии: клик → состояние, регрессия форм и навигации |
 | `shadcn` | поиск/установка компонентов из реестров (`components.json` → `registries`) |
 | `duckduckgo` | референсы, поиск аналогов |
+| `penpot` | собственная инсталляция Penpot 2.18: `http://localhost:9001/mcp/stream` (stdio-прокси нет, только remote). Взаимодействие с макетами — через плагин в открытом файле, сначала `high_level_overview`. Ключ передаётся query-параметром `?userToken={env:PENPOT_MCP_TOKEN}` (значение в Vault: `secret/agent/YOUR_PROJECT/penpot-mcp-key`; `ocp design` подставляет его автоматически). В браузере в плагине нужен **тот же** ключ, иначе `No Penpot instance connected` |
 | `mermaid` | схемы потоков/состояний в документации. Нужен Chromium 1254 из `~/.cache/ms-playwright` (`npx playwright@1.65 install chromium`, **без** `--with-deps`); `npm_config_ignore_scripts=true` отключает падающий postinstall |
 
 Выключены по умолчанию (нужен ключ):

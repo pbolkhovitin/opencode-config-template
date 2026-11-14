@@ -1,5 +1,6 @@
 data/auth.json
 __pycache__/
+.pytest_cache/
 *.pyc
 
 # Dependencies (installed per-machine via setup.sh / opencode plugin)

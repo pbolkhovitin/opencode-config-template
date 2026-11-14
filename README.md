@@ -1,7 +1,7 @@
 # my-opencode-config
 
 Готовый к использованию шаблон конфигурации **OpenCode v2** для Linux (native/WSL):
-default-профиль без MCP, шесть именных профилей, инструкции для агентов, ~100 скиллов,
+default-профиль без MCP, семь именных профилей, инструкции для агентов, ~100 скиллов,
 локальные плагины, команды и установщики.
 
 Репозиторий — обезличенный стартовый набор. Замените плейсхолдеры (`YOUR_ORG`,
@@ -12,7 +12,7 @@ default-профиль без MCP, шесть именных профилей, �
 | Компонент | Путь | Назначение |
 |---|---|---|
 | Default-профиль | `config/opencode.json` | общая работа, **без MCP** |
-| Именные профили | `profiles/{dev,infra,net,sec,ot,mgnt}/` | роли, MCP, модели |
+| Именные профили | `profiles/{dev,infra,net,sec,design,ot,mgnt}/` | роли, MCP, модели |
 | Инструкции | `config/instructions/` | russian, workflow, rules, context-protocol |
 | Скиллы | `config/skills/` | ~100 скиллов, один канонический источник |
 | Плагины | `config/plugins/` | локальные: `profile-badge`, `opencode-mcp-sets`, `folder-switcher` |
@@ -33,6 +33,7 @@ MCP живут в именных профилях:
 | sec | `oc-sec` | docker, ssh |
 | ot | `oc-ot` | docker, duckduckgo, filesystem, playwright, proxmox, ssh, brave-search (off) |
 | mgnt | `oc-mgnt` | docker, playwright, postgres, ssh |
+| design | `oc-design` | chrome-devtools, playwright, penpot, shadcn, mermaid, duckduckgo, figma, magic, unsplash |
 
 Алиасы профилей запускают `opencode --standalone --continue`: в v2 конфигурацией
 владеет фоновый сервис, и без `--standalone` выбранный профиль не применяется.
@@ -66,7 +67,7 @@ Windows native: `.\setup.ps1` (рекомендуется WSL2).
 
 Скрипт раскладывает конфиги в `~/.config/opencode/` и `~/.config/opencode-<profile>/`,
 скиллы — в `~/.config/opencode/skills/`, настраивает алиасы `oc`, `oc-dev`, `oc-infra`,
-`oc-net`, `oc-sec`, `oc-ot`, `oc-mgnt`.
+`oc-net`, `oc-sec`, `oc-ot`, `oc-mgnt`, `oc-design`.
 
 ## Плагины
 

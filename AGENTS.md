@@ -1,6 +1,6 @@
 # my-opencode-config
 
-Репозиторий конфигурации OpenCode v2: default-профиль, шесть именных профилей, общие
+Репозиторий конфигурации OpenCode v2: default-профиль, семь именных профилей, общие
 инструкции, скиллы и установщики. Платформа: Linux (native или WSL).
 
 ## Структура
@@ -14,7 +14,7 @@
 │   ├── skills/            ← ~100 скиллов, канонический источник
 │   ├── command/           ← слэш-команды
 │   └── platform/          ← linux/wsl оверлеи (ALLOWED_DIRECTORIES)
-├── profiles/<name>/       ← dev, infra, net, sec, ot, mgnt
+├── profiles/<name>/       ← dev, infra, net, sec, design, ot, mgnt
 ├── scripts/               ← askpass, миграция конфигов, deploy-config
 ├── setup.sh / setup.ps1   ← установка (Linux/WSL, Windows native)
 └── docs/                  ← документация
@@ -34,6 +34,7 @@
 | `oc-mgnt` | mgnt | PM / product / support |
 | `oc-sec` | sec | CTF и pentest |
 | `oc-ot` | ot | АСУ ТП / ICS, пассивный режим по умолчанию |
+| `oc-design` | design | UI/UX, вёрстка, визуальная приёмка (Penpot, Figma, Mermaid) |
 
 ## Установка
 

@@ -85,7 +85,7 @@ cp -r /tmp/as/canvas-design /tmp/as/theme-factory ~/.config/opencode/skills/
 | `GLips/Figma-Context-MCP` | 16.2k | local (`figma-developer-mcp`) | layout+стили в компактном виде, работает по REST-ключу |
 | `awdr74100/figwright` | 1.4k | local | двусторонний: код → канвас |
 | `gethopp/figma-mcp-bridge` | 913 | plugin+MCP | обход лимитов API |
-| `penpot/penpot-mcp` | 535 | local | официальный, self-host |
+| `penpot/penpot-mcp` | 535 | remote/local | официальный. В Penpot 2.18 — сервис `penpotapp/mcp:2.18` в docker-compose, frontend проксирует `/mcp/stream` (Streamable HTTP) и `/mcp/ws`. Развёрнуто локально: `http://localhost:9001/mcp/stream?userToken={env:PENPOT_MCP_TOKEN}` |
 | shadcn MCP (`shadcn@latest mcp`) | — | local | поиск/установка компонентов; `shadcn mcp init --client opencode` |
 | `21st-dev/magic-mcp` | 6.5k | local | 10k+ React/Tailwind компонентов, генерация по описанию; новый setup: `npx @21st-dev/cli@latest init` |
 | `mcpland/storybook-mcp`, `freema/mcp-design-system-extractor` | 46/73 | local | вытащить реальные компоненты и токены из Storybook |
@@ -127,7 +127,7 @@ cp -r /tmp/as/canvas-design /tmp/as/theme-factory ~/.config/opencode/skills/
 
 - `freema/mcp-design-system-extractor` — дизайн-система из Storybook.
 - `lyse-labs/lyse` — drift-сканер токенов/компонентов/a11y.
-- `penpot-mcp` (self-host) — бесплатная замена Figma для макетов.
+- `penpot-mcp` (self-host) — бесплатная замена Figma для макетов. Локальный инстанс: `~/penpot`, UI `http://localhost:9001`, MCP `http://localhost:9001/mcp/stream`, mailpit `http://localhost:8025`.
 - `superdesign` ★7.6k — внешний агент-дизайнер (не MCP).
 
 ## 4. Как расширять профиль
