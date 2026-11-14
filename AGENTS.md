@@ -12,8 +12,7 @@
 │   ├── AGENTS.md          ← профильный документ (инструкции агентам)
 │   ├── instructions/      ← russian.md, workflow.md, rules.md, context-protocol.md
 │   ├── skills/            ← ~100 скиллов, канонический источник
-│   ├── command/           ← слэш-команды
-│   └── platform/          ← linux/wsl оверлеи (ALLOWED_DIRECTORIES)
+│   └── command/           ← слэш-команды
 ├── profiles/<name>/       ← dev, infra, net, sec, design, ot, mgnt
 ├── scripts/               ← askpass, миграция конфигов, deploy-config
 ├── setup.sh / setup.ps1   ← установка (Linux/WSL, Windows native)
