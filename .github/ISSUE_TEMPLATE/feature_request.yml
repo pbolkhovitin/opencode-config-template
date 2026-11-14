@@ -1,5 +1,5 @@
 name: Feature request
-description: Предложение по шаблону: профиль, агент, скилл, установщик, документация
+description: "Предложение по шаблону: профиль, агент, скилл, установщик, документация"
 title: "[feature] "
 body:
   - type: textarea

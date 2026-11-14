@@ -1,5 +1,5 @@
 name: Bug report
-description: Что-то не работает: установка, профиль, скрипт, документация
+description: "Что-то не работает: установка, профиль, скрипт, документация"
 title: "[bug] "
 body:
   - type: markdown
