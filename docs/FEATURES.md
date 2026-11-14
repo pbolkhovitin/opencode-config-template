@@ -7,7 +7,8 @@
 | Платформа | Установщик | Shell |
 |-----------|-----------|-------|
 | 🐧 Linux | `bash setup.sh` | bash/zsh |
-| 🪟🐧 WSL | `bash setup.sh` (автоопределение) | zsh (рек.), bash |
+| 🪟🐧 WSL (CLI) | `bash setup.sh` (автоопределение WSL 1/2) | zsh или bash |
+| 🖥️ WSL + Desktop | OpenCode Desktop → Add WSL server | GUI в Windows, сервер в WSL |
 
 Установка:
 ```bash
@@ -15,7 +16,9 @@ gh repo clone YOUR_ORG/my-opencode-config
 cd my-opencode-config && bash setup.sh
 ```
 
-> **Windows-native** — в планах (`setup.ps1`, `config/platform/windows/`, `config/instructions/windows.md`); пока поддерживаются Linux/WSL через `setup.sh` (WSL определяется автоматически по `/proc/version`).
+> **Windows-native** — `setup.ps1` (PowerShell 7+). Для GUI рекомендуется
+> OpenCode Desktop на Windows с WSL-сервером: инструменты и секреты остаются в
+> Linux, интерфейс — в Windows. См. [wsl-desktop.md](wsl-desktop.md).
 
 ---
 

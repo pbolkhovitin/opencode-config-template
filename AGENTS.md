@@ -79,3 +79,4 @@ python3 -m pytest tests -q                          # гигиена, мигра
 - [docs/skill-management.md](docs/skill-management.md) — управление скиллами
 - [docs/context-management.md](docs/context-management.md) — контекст и DCP
 - [docs/usage-scenarios.md](docs/usage-scenarios.md) — сценарии: новый проект, подключение существующего, перенос, передача
+- [docs/wsl-desktop.md](docs/wsl-desktop.md) — WSL 2 и OpenCode Desktop: установка, профили, диагностика

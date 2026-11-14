@@ -52,12 +52,19 @@ cd /path/to/my-opencode-config && bash setup.sh
 
 После установки:
 ```bash
-source ~/.zshrc  # применить алиасы
+source ~/.zshrc  # или ~/.bashrc — setup.sh выбирает rc по текущему shell
 opencode_sync pull
 ```
 
-**WSL**: скрипт определяет WSL по `/proc/version` автоматически.
-На WSL рекомендуется zsh — все env-переменные и SSH-agent прописываются в `~/.zshrc`.
+**WSL**: скрипт определяет WSL и его версию автоматически. Env-переменные,
+PATH, SSH-agent и алиасы прописываются в rc-файл текущего shell
+(`~/.zshrc` для zsh, `~/.bashrc` для bash).
+
+OpenCode Desktop на Windows может подключаться к WSL напрямую:
+**Settings → Servers → Add WSL server**. Desktop запускает сервер
+неинтерактивно и не читает shell-rc, поэтому профили `ocp` в нём не
+применяются — используйте проектный `opencode.jsonc`. Подробности, требования
+и диагностика — [wsl-desktop.md](wsl-desktop.md).
 
 ---
 
@@ -186,13 +193,15 @@ ocp dev
 
 ### Платформенные (устанавливаются автоматически)
 
-| Переменная | Linux | WSL |
-|-----------|-------|-----|
-| `OPENCODE_PLATFORM` | `linux` | `wsl` |
-| `OPENCODE_HOME` | `/home/YOURUSER` | `/home/YOURUSER` |
-| `OPENCODE_ALLOWED_DIRS` | `/home/YOURUSER` | `/home/YOURUSER` |
+| Переменная | Назначение |
+|-----------|-----------|
+| `OPENCODE_CONFIG` | путь к конфигу профиля; выставляется `ocp` и алиасами `oc-*` |
+| `OPENCODE_PASSWORD` | фиксированный пароль для `opencode serve` (опционально) |
+| `OPENCODE_CLIENT` | тип клиента; Desktop выставляет `desktop` для WSL-сервера |
 
-Устанавливаются в `~/.zshrc` / `~/.bashrc`.
+Переменные v1 `OPENCODE_PLATFORM`, `OPENCODE_HOME`, `OPENCODE_ALLOWED_DIRS`
+устарели: OpenCode v2 определяет платформу сам, а каталоги задаются профилем
+или проектом. `setup.sh` их больше не пишет.
 
 ### API-ключи (указать свои значения)
 

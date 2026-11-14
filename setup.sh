@@ -15,8 +15,8 @@ set -euo pipefail
 #   # or locally (after clone):
 #   bash setup.sh
 #
-# Requires: git, curl, Node.js >= 18, python3, sudo
-# Install Node.js: curl -fsSL https://deb.nodesource.com/setup_22.x | sudo bash && sudo apt install -y nodejs
+# Requires: git, curl, python3; Node.js >= 18 optional (plugins/tools)
+# Install Node.js (optional): curl -fsSL https://deb.nodesource.com/setup_22.x | sudo bash && sudo apt install -y nodejs
 # ==============================================================
 
 REPO_URL="https://github.com/YOUR_ORG/my-opencode-config.git"
@@ -110,18 +110,29 @@ pm_install() {
 # ---------- Preflight ----------
 # ---------- WSL detection ----------
 IS_WSL=false
+IS_WSL1=false
 if grep -qi microsoft /proc/version 2>/dev/null; then
     IS_WSL=true
-    echo -e "${BLUE}[WSL]${NC}  WSL environment detected — applying WSL-specific setup"
+    if grep -qi "microsoft-standard" /proc/sys/kernel/osrelease 2>/dev/null; then
+        echo -e "${BLUE}[WSL]${NC}  WSL 2 detected — applying WSL-specific setup"
+    else
+        IS_WSL1=true
+        echo -e "${YELLOW}[WSL]${NC}  WSL 1 detected — Desktop требует WSL 2: wsl --set-version <distro> 2"
+    fi
 fi
 
 step "1/12 — Dependency check"
-for cmd in git curl node npm; do
+for cmd in git curl; do
     command -v "$cmd" >/dev/null 2>&1 || fail "Missing: $cmd. Install via system package manager."
 done
 
-NODE_VER=$(node -v | sed 's/v//' | cut -d. -f1)
-[ "$NODE_VER" -ge 18 ] || fail "Node.js >= 18 required (current: $(node -v))"
+if command -v node >/dev/null 2>&1; then
+    NODE_VER=$(node -v | sed 's/v//' | cut -d. -f1)
+    [ "$NODE_VER" -ge 18 ] && ok "Node.js $(node -v)" || warn "Node.js >= 18 recommended (current: $(node -v)) — часть плагинов может не установиться"
+else
+    warn "Node.js не найден — OpenCode v2 работает без него, но часть плагинов/инструментов требует Node.js >= 18"
+fi
+command -v npm >/dev/null 2>&1 || warn "npm не найден — node-зависимые плагины будут пропущены"
 
 command -v python3 >/dev/null 2>&1 && ok "python3 found" || warn "python3 not found — pip/uvx packages skipped"
 command -v sudo >/dev/null 2>&1 && ok "sudo found" || warn "sudo not found — system packages skipped"
@@ -136,7 +147,7 @@ if command -v opencode >/dev/null 2>&1; then
     OPENCODE_BIN=$(command -v opencode)
 else
     info "Downloading opencode..."
-    curl -fsSL https://opencode.ai/install | bash
+    curl -fsSL https://opencode.ai/v2/install | bash
     command -v opencode >/dev/null 2>&1 || fail "Failed to install opencode CLI"
     OPENCODE_BIN=$(command -v opencode)
     ok "opencode $(opencode --version) installed"
@@ -430,23 +441,34 @@ else
     warn "askpass.sh not found in repo"
 fi
 
-# --- Add paths to .zshrc ---
+# --- Shell rc file (zsh или bash) ---
+if [ "${SHELL##*/}" = "zsh" ] || [ -n "${ZSH_VERSION:-}" ]; then
+    RC_FILE="$HOME/.zshrc"
+elif [ -f "$HOME/.bashrc" ] || [ "${SHELL##*/}" = "bash" ]; then
+    RC_FILE="$HOME/.bashrc"
+else
+    RC_FILE="$HOME/.profile"
+fi
+touch "$RC_FILE"
+info "Shell rc: $RC_FILE"
+
+# --- Add paths to shell rc ---
 for entry in '$HOME/.local/bin' '$HOME/.opencode/bin'; do
     dir_eval=$(eval echo "$entry")
-    if ! grep -qF "$dir_eval" "$HOME/.zshrc" 2>/dev/null; then
-        echo "export PATH=\"$entry:\$PATH\"" >> "$HOME/.zshrc"
-        info "Added $entry to PATH in .zshrc"
+    if ! grep -qF "$dir_eval" "$RC_FILE" 2>/dev/null; then
+        echo "export PATH=\"$entry:\$PATH\"" >> "$RC_FILE"
+        info "Added $entry to PATH in $(basename "$RC_FILE")"
     fi
 done
 
 # --- Set SUDO_ASKPASS ---
-if ! grep -q "SUDO_ASKPASS" "$HOME/.zshrc" 2>/dev/null; then
+if ! grep -q "SUDO_ASKPASS" "$RC_FILE" 2>/dev/null; then
     {
         echo ""
         echo "# Secure sudo: askpass reads password from /dev/tty, never captured by opencode"
         echo "export SUDO_ASKPASS=\"$HOME/.local/bin/opencode-askpass\""
-    } >> "$HOME/.zshrc"
-    info "SUDO_ASKPASS added to .zshrc"
+    } >> "$RC_FILE"
+    info "SUDO_ASKPASS added to $(basename "$RC_FILE")"
 fi
 export SUDO_ASKPASS="$HOME/.local/bin/opencode-askpass"
 
@@ -456,33 +478,23 @@ ok "CLI tools installed"
 if [ "$IS_WSL" = true ]; then
     step "9/12 — WSL-specific configuration"
 
-    # Set WSL env vars
-    RC_FILE="$HOME/.zshrc"
-    WSL_BLOCK='
-# ---------- opencode WSL ----------
-export OPENCODE_PLATFORM="wsl"
-export OPENCODE_HOME="$HOME"
-export OPENCODE_ALLOWED_DIRS="$HOME"
-'
-    if ! grep -q "OPENCODE_PLATFORM" "$RC_FILE" 2>/dev/null; then
-        echo "$WSL_BLOCK" >> "$RC_FILE"
-        ok "WSL env vars added to .zshrc"
+    # v2 не использует OPENCODE_PLATFORM / OPENCODE_HOME / OPENCODE_ALLOWED_DIRS:
+    # платформа определяется автоматически, каталоги задаёт профиль или проект.
+    if [ "$IS_WSL1" = true ]; then
+        warn "WSL 1: OpenCode Desktop требует WSL 2 — wsl --set-version <distro> 2"
     fi
-    export OPENCODE_PLATFORM="wsl"
-    export OPENCODE_HOME="$HOME"
-    export OPENCODE_ALLOWED_DIRS="$HOME"
 
-    # SSH agent for WSL
+    # SSH agent for WSL (ключи добавляются из ~/.ssh по умолчанию)
     if ! grep -q "SSH_AUTH_SOCK" "$RC_FILE" 2>/dev/null; then
         cat >> "$RC_FILE" << 'SSH'
 
 # SSH agent (WSL)
 if [ -z "$SSH_AUTH_SOCK" ]; then
     eval "$(ssh-agent -s)" >/dev/null 2>&1
-    ssh-add ~/.ssh/id_ed25519_github_yandex 2>/dev/null || true
+    ssh-add 2>/dev/null || true
 fi
 SSH
-        ok "SSH agent auto-start added to .zshrc"
+        ok "SSH agent auto-start added to $(basename "$RC_FILE")"
     fi
 
     # Docker check
@@ -498,6 +510,11 @@ SSH
         ok "git core.autocrlf set to input (WSL)"
     fi
 
+    case "$PWD" in
+        /mnt/*) warn "Проект на /mnt/...: перенесите в ~/projects (ext4) — иначе медленно и возможны проблемы с правами/CRLF" ;;
+    esac
+
+    info "Desktop: Settings → Servers → Add WSL server; подробности — docs/wsl-desktop.md"
     ok "WSL configuration complete"
 fi
 
@@ -564,8 +581,8 @@ if [ ${#MISSING[@]} -gt 0 ]; then
     done
     echo ""
     info "Add them to your shell rc file, e.g.:"
-    echo '    echo "export DATABASE_URL=\"postgresql://user:pass@host/db\"" >> ~/.zshrc'
-    echo "    source ~/.zshrc"
+    echo "    echo \"export DATABASE_URL=\\\"postgresql://user:pass@host/db\\\"\" >> $RC_FILE"
+    echo "    source $RC_FILE"
     echo ""
 else
     ok "All required env vars are set"
@@ -573,7 +590,7 @@ fi
 info "GitLab/GitHub tokens are read from Vault (agent-vault, instance personal) — their env vars are not required."
 
 # ---------- zsh aliases ----------
-ZSHRC="$HOME/.zshrc"
+ZSHRC="$RC_FILE"
 ALIASES_BLOCK='
 # ---------- opencode profile aliases (OPENCODE_CONFIG + --standalone + --continue) ----------
 # oc: интерактивный запуск продолжает последнюю сессию; подкоманды — без флагов
