@@ -163,6 +163,19 @@ opencode_sync pull
 | Правило | визуальная приёмка — только `@visual-qa`, read-only |
 | Назначение | арт-дирекшн, дизайн-система, вёрстка, скриншот-приёмка |
 
+## Проект с несколькими профилями
+
+Если проекту нужны роли из двух профилей (например, `dev` и `infra`), не
+переключайтесь между ними посреди задачи: выберите базовый профиль и добавьте
+недостающие MCP-серверы и агентов в `<project>/opencode.jsonc`.
+
+```bash
+oc-project-init.py --profiles dev,infra
+ocp dev
+```
+
+Слияние, ограничения и схемы переключения — [multi-profile-projects.md](multi-profile-projects.md).
+
 ---
 
 ## Environment Variables
@@ -316,7 +329,7 @@ oc-mgnt              # mgnt profile
 | opencode-gemini-auth | OAuth для Google/Gemini | default, dev, infra, net, mgnt |
 | opencode-tui-usage | TUI-sidebar: cache, context, токены, стоимость, скорость | все (cli.json) |
 | @opencode-cockpit/status | Нижняя строка TUI: git.diff, todo, diagnostics, статус сессии | все (cli.json) |
-| profile-badge (local) | Бейдж `профиль · агент · MCP N/M` в футере | все (plugins/) |
+| profile-badge (local) | Бейдж `профиль·агент·N/M` (MCP connected/active) в футере | все (plugins/) |
 | opencode-mcp-sets (local) | Per-session видимость MCP: `/mcp list/off/on/only/reset` | все (plugins/) |
 
 > **Убрано (v1-only, в v2 не работают):** opencode-swarm, opencode-websearch-cited,
@@ -341,7 +354,8 @@ oc-mgnt              # mgnt profile
 - **Нижняя строка**: `@opencode-cockpit/status` — `git.diff`, `todo`, `diagnostics`,
   статус сессии; diagnostics показывает нездоровые MCP/LSP.
 - **Бейдж профиля**: локальный плагин `config/plugins/profile-badge/tui.tsx` —
-  `infra · infra-engineer · MCP 2/6` в `prompt.footer.status`.
+  `infra·infra-engineer·6/6` в `prompt.footer.status` (MCP — connected/active,
+  disabled-серверы не считаются).
 - **Токены за ход**: `debug.turn_tokens: true`.
 - **Diff**: `diffs.source: turn`, `diffs.tree: true`.
 - **Keybinds**: `<leader>v` — MCP, `<leader>d` — diff, `<leader>h` — thinking,

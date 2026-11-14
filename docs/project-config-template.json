@@ -1,5 +1,5 @@
 {
-  "//": "Шаблон проектного конфига OpenCode. Скопируйте в <project>/opencode.json (или .opencode/opencode.json), удалите ключи // и подставьте свои значения. MCP и агенты живут вместе с проектом, глобальный default остаётся лёгким.",
+  "//": "Шаблон проектного конфига OpenCode. Скопируйте в <project>/opencode.json (или .opencode/opencode.json), удалите ключи // и подставьте свои значения. MCP и агенты живут вместе с проектом, глобальный default остаётся лёгким. Чтобы объединить готовые профили, используйте scripts/oc-project-init.py --profiles dev,infra (см. docs/multi-profile-projects.md).",
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
     "servers": {

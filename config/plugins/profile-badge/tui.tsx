@@ -75,9 +75,11 @@ export default Plugin.define({
           : undefined
 
         return (
-          <text fg={context.theme.text.base}>
-            {`${profile} · ${activeAgent ?? fallbackAgent} · ${mcpLabel()}`}
-          </text>
+          <box flexShrink={0}>
+            <text fg={context.theme.text.base}>
+              {`${profile} · ${activeAgent ?? fallbackAgent} · ${mcpLabel()}`}
+            </text>
+          </box>
         )
       },
     })

@@ -68,6 +68,11 @@ if [[ -f "$REPO_DIR/scripts/ocp" ]]; then
     ok "ocp installed to $LOCAL_BIN"
 fi
 
+if [[ -f "$REPO_DIR/scripts/oc-project-init.py" ]]; then
+    install -m755 "$REPO_DIR/scripts/oc-project-init.py" "$LOCAL_BIN/oc-project-init.py"
+    ok "oc-project-init installed to $LOCAL_BIN"
+fi
+
 if [[ -f "$REPO_DIR/scripts/gitlab-mcp-vault" ]]; then
     install -m755 "$REPO_DIR/scripts/gitlab-mcp-vault" "$LOCAL_BIN/gitlab-mcp-vault"
     ok "gitlab-mcp-vault installed to $LOCAL_BIN"
